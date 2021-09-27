@@ -1,0 +1,251 @@
+Index:           0
+ GT   File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\vai_data\gt_nobd/top_mosaic_09cm_area10.tif
+ Pred File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\results281\gray_big/top_mosaic_09cm_area10.tif
+ Pixel Acc:      0.8782919507385716
+ Mean IoU:       0.7817558150852165
+ Mean F1 score:  0.8712000055544152
+ Mean Precision: 0.8556759119168
+ Mean Recall:    0.8921666121138659
+ Class Names:    Impervious surfaces # Building # Low vegetation # Tree # Car # Clutter/background
+ IoU:            [0.81365331 0.82753684 0.63456102 0.81509588 0.59968784 1.        ]
+ F1 score:       [0.89725341 0.90563082 0.77642989 0.89812983 0.74975608 1.        ]
+ Precision:      [0.95762936 0.85962618 0.77660817 0.86269846 0.6774933  1.        ]
+ Recall:         [0.84403902 0.95683795 0.7762517  0.93659621 0.83927479 1.        ]
+
+Index:           1
+ GT   File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\vai_data\gt_nobd/top_mosaic_09cm_area12.tif
+ Pred File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\results281\gray_big/top_mosaic_09cm_area12.tif
+ Pixel Acc:      0.8845140179988965
+ Mean IoU:       0.8495824137635708
+ Mean F1 score:  0.9154945123777262
+ Mean Precision: 0.9198145949507937
+ Mean Recall:    0.9129266873585734
+ Class Names:    Impervious surfaces # Building # Low vegetation # Tree # Car # Clutter/background
+ IoU:            [0.80929887 0.92318373 0.68509593 0.80355338 0.87636258 1.        ]
+ F1 score:       [0.89459943 0.96005776 0.81312395 0.89107801 0.93410793 1.        ]
+ Precision:      [0.87212732 0.93935748 0.86107758 0.87507382 0.97125137 1.        ]
+ Recall:         [0.91826025 0.98169092 0.77022966 0.90767852 0.89970078 1.        ]
+
+Index:           2
+ GT   File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\vai_data\gt_nobd/top_mosaic_09cm_area14.tif
+ Pred File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\results281\gray_big/top_mosaic_09cm_area14.tif
+ Pixel Acc:      0.8629194600069321
+ Mean IoU:       0.78881778863044
+ Mean F1 score:  0.8759480225978153
+ Mean Precision: 0.8544927125706177
+ Mean Recall:    0.9072176191430978
+ Class Names:    Impervious surfaces # Building # Low vegetation # Tree # Car # Clutter/background
+ IoU:            [0.79318562 0.89375386 0.62562956 0.77750729 0.6428304  1.        ]
+ F1 score:       [0.8846665  0.94389654 0.76970741 0.87482881 0.78258888 1.        ]
+ Precision:      [0.91128477 0.90725483 0.76206717 0.88453945 0.66181005 1.        ]
+ Recall:         [0.85955911 0.98362255 0.77750241 0.86532905 0.9572926  1.        ]
+
+Index:           3
+ GT   File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\vai_data\gt_nobd/top_mosaic_09cm_area16.tif
+ Pred File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\results281\gray_big/top_mosaic_09cm_area16.tif
+ Pixel Acc:      0.8877233826047584
+ Mean IoU:       0.670423132371643
+ Mean F1 score:  0.7422250426281599
+ Mean Precision: 0.7488217961059672
+ Mean Recall:    0.9029488238781725
+ Class Names:    Impervious surfaces # Building # Low vegetation # Tree # Car # Clutter/background
+ IoU:            [0.76091551 0.90501914 0.74985814 0.80550054 0.80124546 0.        ]
+ F1 score:       [0.86422717 0.95014178 0.85705021 0.89227394 0.88965716 0.        ]
+ Precision:      [0.85683827 0.95336393 0.85360021 0.89704265 0.93208572 0.        ]
+ Recall:         [0.87174461 0.94694135 0.86052821 0.88755566 0.85092312 1.        ]
+
+Index:           4
+ GT   File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\vai_data\gt_nobd/top_mosaic_09cm_area2.tif
+ Pred File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\results281\gray_big/top_mosaic_09cm_area2.tif
+ Pixel Acc:      0.9082671528808172
+ Mean IoU:       0.8519647689161295
+ Mean F1 score:  0.917191766681139
+ Mean Precision: 0.92322150236413
+ Mean Recall:    0.9139474206993533
+ Class Names:    Impervious surfaces # Building # Low vegetation # Tree # Car # Clutter/background
+ IoU:            [0.8936686  0.93429126 0.70994062 0.78970224 0.79543664 0.98874925]
+ F1 score:       [0.94384899 0.96602955 0.83036874 0.88249567 0.88606484 0.9943428 ]
+ Precision:      [0.91658017 0.97233531 0.90015424 0.8452066  0.91232569 0.992727  ]
+ Recall:         [0.9727901  0.95980505 0.77062513 0.92322687 0.86127351 0.99596388]
+
+Index:           5
+ GT   File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\vai_data\gt_nobd/top_mosaic_09cm_area20.tif
+ Pred File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\results281\gray_big/top_mosaic_09cm_area20.tif
+ Pixel Acc:      0.8929181737881137
+ Mean IoU:       0.6488444970933659
+ Mean F1 score:  0.7274039986003649
+ Mean Precision: 0.8758547712896405
+ Mean Recall:    0.7518098789446764
+ Class Names:    Impervious surfaces # Building # Low vegetation # Tree # Car # Clutter/background
+ IoU:            [0.84368194 0.78411919 0.71453021 0.89475233 0.65598331 0.        ]
+ F1 score:       [0.91521419 0.87899866 0.83349971 0.94445307 0.79225836 0.        ]
+ Precision:      [0.94882297 0.80031957 0.85727442 0.92808667 0.720625   1.        ]
+ Recall:         [0.88390491 0.97483422 0.81100809 0.96140706 0.87970498 0.        ]
+
+Index:           6
+ GT   File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\vai_data\gt_nobd/top_mosaic_09cm_area22.tif
+ Pred File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\results281\gray_big/top_mosaic_09cm_area22.tif
+ Pixel Acc:      0.914574074973187
+ Mean IoU:       0.681340913528433
+ Mean F1 score:  0.7476807244788154
+ Mean Precision: 0.7558273944457047
+ Mean Recall:    0.907829877923441
+ Class Names:    Impervious surfaces # Building # Low vegetation # Tree # Car # Clutter/background
+ IoU:            [0.87585282 0.9140067  0.69888127 0.86471289 0.73459181 0.        ]
+ F1 score:       [0.93381827 0.95507158 0.82275469 0.92744882 0.84699098 0.        ]
+ Precision:      [0.92861357 0.93630744 0.86983219 0.91231086 0.8879003  0.        ]
+ Recall:         [0.93908165 0.97460318 0.78051145 0.94309763 0.80968535 1.        ]
+
+Index:           7
+ GT   File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\vai_data\gt_nobd/top_mosaic_09cm_area24.tif
+ Pred File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\results281\gray_big/top_mosaic_09cm_area24.tif
+ Pixel Acc:      0.8777458047744163
+ Mean IoU:       0.8180729294920671
+ Mean F1 score:  0.8974562612415684
+ Mean Precision: 0.894085412945781
+ Mean Recall:    0.9012533755740494
+ Class Names:    Impervious surfaces # Building # Low vegetation # Tree # Car # Clutter/background
+ IoU:            [0.72167387 0.83360824 0.7945639  0.75876345 0.79982812 1.        ]
+ F1 score:       [0.83833981 0.90925446 0.88552311 0.86283741 0.88878278 1.        ]
+ Precision:      [0.84604652 0.9148897  0.87832159 0.86664009 0.85861459 1.        ]
+ Recall:         [0.83077223 0.90368823 0.8928437  0.85906796 0.92114814 1.        ]
+
+Index:           8
+ GT   File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\vai_data\gt_nobd/top_mosaic_09cm_area27.tif
+ Pred File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\results281\gray_big/top_mosaic_09cm_area27.tif
+ Pixel Acc:      0.9044546498036552
+ Mean IoU:       0.6635092181552936
+ Mean F1 score:  0.7365356696990163
+ Mean Precision: 0.9099880501893104
+ Mean Recall:    0.7402373318645065
+ Class Names:    Impervious surfaces # Building # Low vegetation # Tree # Car # Clutter/background
+ IoU:            [0.86650745 0.91074559 0.69424286 0.69557827 0.81398114 0.        ]
+ F1 score:       [0.92848003 0.95328818 0.81953169 0.82046141 0.8974527  0.        ]
+ Precision:      [0.89583997 0.97860245 0.90908968 0.71630573 0.96009047 1.        ]
+ Recall:         [0.96358853 0.92925053 0.74603669 0.96006071 0.84248753 0.        ]
+
+Index:           9
+ GT   File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\vai_data\gt_nobd/top_mosaic_09cm_area29.tif
+ Pred File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\results281\gray_big/top_mosaic_09cm_area29.tif
+ Pixel Acc:      0.8993446026749524
+ Mean IoU:       0.6203303073761304
+ Mean F1 score:  0.7144347171690045
+ Mean Precision: 0.8410832964476193
+ Mean Recall:    0.7546534356545944
+ Class Names:    Impervious surfaces # Building # Low vegetation # Tree # Car # Clutter/background
+ IoU:            [0.90959897 0.91232688 0.62739331 0.70730157 0.51023655 0.05512456]
+ F1 score:       [0.95265968 0.9541537  0.77104079 0.82856079 0.67570415 0.1044892 ]
+ Precision:      [0.94262724 0.95051156 0.89370797 0.71403291 0.5456201  1.        ]
+ Recall:         [0.96290797 0.95782385 0.67798322 0.98684688 0.88723413 0.05512456]
+
+Index:           10
+ GT   File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\vai_data\gt_nobd/top_mosaic_09cm_area31.tif
+ Pred File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\results281\gray_big/top_mosaic_09cm_area31.tif
+ Pixel Acc:      0.9415500377390708
+ Mean IoU:       0.7527472046774427
+ Mean F1 score:  0.8172748445129875
+ Mean Precision: 0.9279477877401844
+ Mean Recall:    0.8157783775115651
+ Class Names:    Impervious surfaces # Building # Low vegetation # Tree # Car # Clutter/background
+ IoU:            [0.92212132 0.93923273 0.88915132 0.88640587 0.74128645 0.13828554]
+ F1 score:       [0.95948296 0.96866427 0.94132356 0.93978278 0.8514239  0.24297161]
+ Precision:      [0.93763519 0.96328458 0.92948976 0.96170987 0.78696044 0.98860689]
+ Recall:         [0.98237315 0.97410439 0.95346257 0.91883328 0.92739061 0.13850627]
+
+Index:           11
+ GT   File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\vai_data\gt_nobd/top_mosaic_09cm_area33.tif
+ Pred File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\results281\gray_big/top_mosaic_09cm_area33.tif
+ Pixel Acc:      0.9095526370480616
+ Mean IoU:       0.7320539494046571
+ Mean F1 score:  0.8357370364862079
+ Mean Precision: 0.877531573335196
+ Mean Recall:    0.8321062973560011
+ Class Names:    Impervious surfaces # Building # Low vegetation # Tree # Car # Clutter/background
+ IoU:            [0.89100712 0.88279218 0.76291383 0.79013474 0.5946095  0.47086631]
+ F1 score:       [0.94236252 0.93774787 0.8655146  0.88276567 0.74577444 0.64025712]
+ Precision:      [0.90598863 0.96161048 0.82806566 0.92619804 0.65058738 0.99273924]
+ Recall:         [0.98177929 0.9150409  0.90651121 0.8432242  0.87358868 0.47249351]
+
+Index:           12
+ GT   File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\vai_data\gt_nobd/top_mosaic_09cm_area35.tif
+ Pred File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\results281\gray_big/top_mosaic_09cm_area35.tif
+ Pixel Acc:      0.8858437006196508
+ Mean IoU:       0.8289696196027266
+ Mean F1 score:  0.9023753125325557
+ Mean Precision: 0.9188725442437514
+ Mean Recall:    0.8901740196462429
+ Class Names:    Impervious surfaces # Building # Low vegetation # Tree # Car # Clutter/background
+ IoU:            [0.84917651 0.92749668 0.66628291 0.73772785 0.79313377 1.        ]
+ F1 score:       [0.91843748 0.96238472 0.79972363 0.84907179 0.88463425 1.        ]
+ Precision:      [0.93806677 0.96651812 0.82668005 0.80122549 0.98074484 1.        ]
+ Recall:         [0.89961286 0.95828653 0.7744697  0.90299542 0.80567962 1.        ]
+
+Index:           13
+ GT   File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\vai_data\gt_nobd/top_mosaic_09cm_area38.tif
+ Pred File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\results281\gray_big/top_mosaic_09cm_area38.tif
+ Pixel Acc:      0.9207161277404069
+ Mean IoU:       0.6928198711897912
+ Mean F1 score:  0.7556187673487043
+ Mean Precision: 0.7622332387209557
+ Mean Recall:    0.9165695985820751
+ Class Names:    Impervious surfaces # Building # Low vegetation # Tree # Car # Clutter/background
+ IoU:            [0.8939001  0.90596589 0.79915213 0.81202158 0.74587952 0.        ]
+ F1 score:       [0.94397809 0.95066328 0.88836527 0.89626039 0.85444558 0.        ]
+ Precision:      [0.94828988 0.95297908 0.89511572 0.87706026 0.89995448 0.        ]
+ Recall:         [0.93970533 0.9483587  0.88171587 0.91631997 0.81331772 1.        ]
+
+Index:           14
+ GT   File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\vai_data\gt_nobd/top_mosaic_09cm_area4.tif
+ Pred File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\results281\gray_big/top_mosaic_09cm_area4.tif
+ Pixel Acc:      0.9234923714118896
+ Mean IoU:       0.76560238954636
+ Mean F1 score:  0.8545677692664827
+ Mean Precision: 0.8679276232362692
+ Mean Recall:    0.8484624358363851
+ Class Names:    Impervious surfaces # Building # Low vegetation # Tree # Car # Clutter/background
+ IoU:            [0.84293428 0.92053042 0.45034086 0.69223912 0.68756966 1.        ]
+ F1 score:       [0.91477411 0.95862103 0.62101382 0.81813393 0.81486373 1.        ]
+ Precision:      [0.87212911 0.98295878 0.68230945 0.75976726 0.91040114 1.        ]
+ Recall:         [0.961804   0.93545935 0.56982343 0.88621449 0.73747335 1.        ]
+
+Index:           15
+ GT   File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\vai_data\gt_nobd/top_mosaic_09cm_area6.tif
+ Pred File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\results281\gray_big/top_mosaic_09cm_area6.tif
+ Pixel Acc:      0.9283335550140411
+ Mean IoU:       0.8263730426398324
+ Mean F1 score:  0.897883542366947
+ Mean Precision: 0.9108101011676496
+ Mean Recall:    0.8873922943404658
+ Class Names:    Impervious surfaces # Building # Low vegetation # Tree # Car # Clutter/background
+ IoU:            [0.85096073 0.93557816 0.62116218 0.90465604 0.64588114 1.        ]
+ F1 score:       [0.91948005 0.96671701 0.76631714 0.94994164 0.78484542 1.        ]
+ Precision:      [0.89888399 0.98062183 0.77625334 0.9461185  0.86298296 1.        ]
+ Recall:         [0.94104207 0.953201   0.7566321  0.9537958  0.71968279 1.        ]
+
+Index:           16
+ GT   File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\vai_data\gt_nobd/top_mosaic_09cm_area8.tif
+ Pred File:      Z:\private\dongsj\0sjcode\code0914_vaiseg\results281\gray_big/top_mosaic_09cm_area8.tif
+ Pixel Acc:      0.9284211472613093
+ Mean IoU:       0.8689648974697143
+ Mean F1 score:  0.9276700634180045
+ Mean Precision: 0.9382703554903741
+ Mean Recall:    0.9197622672353853
+ Class Names:    Impervious surfaces # Building # Low vegetation # Tree # Car # Clutter/background
+ IoU:            [0.86347545 0.92493497 0.78190425 0.89563705 0.74783767 1.        ]
+ F1 score:       [0.9267366  0.96100386 0.87760523 0.94494571 0.85572898 1.        ]
+ Precision:      [0.94598275 0.95748055 0.83736147 0.95917651 0.92962086 1.        ]
+ Recall:         [0.90825796 0.9645532  0.92191254 0.93113101 0.79271889 1.        ]
+
+============================================================
+ Pixel Acc:      0.9038674934194448
+ Mean IoU:       0.7254556765099457
+ Mean F1 score:  0.8247214488822268
+ Mean Precision: 0.9028387013412855
+ Mean Recall:    0.8000087073492078
+ Class Names:    Impervious surfaces # Building # Low vegetation # Tree # Car # Clutter/background
+ IoU:            [0.86059582 0.90437833 0.72276566 0.8114911  0.71764182 0.33586133]
+ F1 score:       [0.92507552 0.94978851 0.839076   0.89593716 0.83561289 0.50283861]
+ Precision:      [0.91946327 0.94878576 0.85780076 0.87608413 0.8281006  0.9867977 ]
+ Recall:         [0.9307567  0.95079339 0.82115126 0.91671084 0.84326273 0.33737732]
+============================================================
+
