@@ -77,7 +77,7 @@ class OutConv(nn.Module):
 class Res_UNet_50(nn.Module):
     def __init__(self, in_c, num_class, bilinear=True):
         super(Res_UNet_50, self).__init__()
-        self.n_channels = 3
+        self.in_c = 3
         self.num_class = num_class
         self.bilinear = bilinear
         self.backbone = get_model('resnet50')

@@ -17,7 +17,7 @@ seed = 666
 os.environ['PYTHONHASHSEED'] = str(seed)
 
 cosineLR = True # whether use cosineLR or not
-n_channels = 3
+in_c = 3
 n_labels = 1
 epochs = 2000
 img_size = 224

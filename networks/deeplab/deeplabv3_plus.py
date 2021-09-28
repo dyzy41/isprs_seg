@@ -105,13 +105,14 @@ class DeepLabV3Plus(nn.Module):
         Image Segmentation."
     """
 
-    def __init__(self, num_class, **kwargs):
+    def __init__(self, in_c, num_class, **kwargs):
         super(DeepLabV3Plus, self).__init__()
         aux = True
         self.aux = aux
         self.num_class = num_class
+        self.in_c = in_c
 
-        self.pretrained = get_model('efficientnet_b2')
+        self.pretrained = get_model('efficientnet_b2', self.in_c)
 
         # deeplabv3 plus
         self.head = _DeepLabHead(num_class, c1_channels=24, **kwargs)

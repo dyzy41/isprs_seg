@@ -59,19 +59,19 @@ class UpBlock(nn.Module):
         return self.nConvs(x)
 
 class UNet(nn.Module):
-    def __init__(self, n_channels=3, num_class=9):
+    def __init__(self, in_c=3, num_class=9):
         '''
-        n_channels : number of channels of the input.
+        in_c : number of channels of the input.
                         By default 3, because we have RGB images
         n_labels : number of channels of the ouput.
                       By default 3 (2 labels + 1 for the background)
         '''
         super().__init__()
-        self.n_channels = n_channels
+        self.in_c = in_c
         self.num_class = num_class
         # Question here
         in_cannels = 64
-        self.inc = ConvBatchNorm(n_channels, in_cannels)
+        self.inc = ConvBatchNorm(in_c, in_cannels)
         self.down1 = DownBlock(in_cannels, in_cannels*2, nb_Conv=2)
         self.down2 = DownBlock(in_cannels*2, in_cannels*4, nb_Conv=2)
         self.down3 = DownBlock(in_cannels*4, in_cannels*8, nb_Conv=2)

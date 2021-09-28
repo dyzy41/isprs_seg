@@ -41,7 +41,7 @@ class PSPUpsample(nn.Module):
 
 
 class PSPNet(nn.Module):
-    def __init__(self, num_class=18, sizes=(1, 2, 3, 6), psp_size=2048, deep_features_size=1024, backend='resnet50',
+    def __init__(self, in_c=3, num_class=18, sizes=(1, 2, 3, 6), psp_size=2048, deep_features_size=1024, backend='resnet50',
                  pretrained=False):
         super().__init__()
         self.feats = getattr(extractors, backend)(pretrained)
