@@ -94,6 +94,106 @@ class Res_UNet_50(nn.Module):
 
         self.outc = OutConv(64, num_class)
 
+    def forward(self, x):
+        size = x.size()
+        layers = self.backbone(x)
+        x1, x2, x3, x4, x5 = layers[0], layers[1], layers[2], layers[3], layers[4]
+
+        x = self.up1(x5, x4)
+        x = self.up2(x, x3)
+        x = self.up3(x, x2)
+        x = self.up4(x, x1)
+        out = F.interpolate(x, size=(size[2], size[3]), mode='bilinear')
+        out = self.outc(out)
+        return out
+
+class Res_UNet_34(nn.Module):
+    def __init__(self, in_c, num_class, bilinear=True):
+        super(Res_UNet_34, self).__init__()
+        self.in_c = 3
+        self.num_class = num_class
+        self.bilinear = bilinear
+        self.backbone = get_model('resnet34')
+
+        self.inc = DoubleConv(in_c, 64)
+        self.down1 = Down(64, 128)
+        self.down2 = Down(128, 256)
+        self.down3 = Down(256, 512)
+        self.down4 = Down(512, 512)
+        self.up1 = Up(512+256, 256, bilinear)
+        self.up2 = Up(256+128, 128, bilinear)
+        self.up3 = Up(128+64, 64, bilinear)
+        self.up4 = Up(64+64, 64, bilinear)
+
+        self.outc = OutConv(64, num_class)
+
+    def forward(self, x):
+        size = x.size()
+        layers = self.backbone(x)
+        x1, x2, x3, x4, x5 = layers[0], layers[1], layers[2], layers[3], layers[4]
+
+        x = self.up1(x5, x4)
+        x = self.up2(x, x3)
+        x = self.up3(x, x2)
+        x = self.up4(x, x1)
+        out = F.interpolate(x, size=(size[2], size[3]), mode='bilinear')
+        out = self.outc(out)
+        return out
+
+
+class Res_UNet_101(nn.Module):
+    def __init__(self, in_c, num_class, bilinear=True):
+        super(Res_UNet_101, self).__init__()
+        self.in_c = 3
+        self.num_class = num_class
+        self.bilinear = bilinear
+        self.backbone = get_model('resnet50')
+
+        self.inc = DoubleConv(in_c, 64)
+        self.down1 = Down(64, 128)
+        self.down2 = Down(128, 256)
+        self.down3 = Down(256, 512)
+        self.down4 = Down(512, 512)
+        self.up1 = Up(2048+1024, 256, bilinear)
+        self.up2 = Up(512+256, 128, bilinear)
+        self.up3 = Up(256+128, 64, bilinear)
+        self.up4 = Up(64+64, 64, bilinear)
+
+        self.outc = OutConv(64, num_class)
+
+    def forward(self, x):
+        size = x.size()
+        layers = self.backbone(x)
+        x1, x2, x3, x4, x5 = layers[0], layers[1], layers[2], layers[3], layers[4]
+
+        x = self.up1(x5, x4)
+        x = self.up2(x, x3)
+        x = self.up3(x, x2)
+        x = self.up4(x, x1)
+        out = F.interpolate(x, size=(size[2], size[3]), mode='bilinear')
+        out = self.outc(out)
+        return out
+
+
+class Res_UNet_152(nn.Module):
+    def __init__(self, in_c, num_class, bilinear=True):
+        super(Res_UNet_152, self).__init__()
+        self.in_c = 3
+        self.num_class = num_class
+        self.bilinear = bilinear
+        self.backbone = get_model('resnet50')
+
+        self.inc = DoubleConv(in_c, 64)
+        self.down1 = Down(64, 128)
+        self.down2 = Down(128, 256)
+        self.down3 = Down(256, 512)
+        self.down4 = Down(512, 512)
+        self.up1 = Up(2048+1024, 256, bilinear)
+        self.up2 = Up(512+256, 128, bilinear)
+        self.up3 = Up(256+128, 64, bilinear)
+        self.up4 = Up(64+64, 64, bilinear)
+
+        self.outc = OutConv(64, num_class)
 
     def forward(self, x):
         size = x.size()

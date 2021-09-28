@@ -1,0 +1,1 @@
+from networks.encnet.encnet import EncNet
