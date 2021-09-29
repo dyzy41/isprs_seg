@@ -15,7 +15,7 @@ from torchvision.utils import make_grid
 import tools
 from tensorboardX import SummaryWriter
 from inference import slide_pred
-from networks.get_net import get_net
+from networks.get_model import get_net
 from config import *
 from tools.cal_iou import evaluate
 from tools.losses import get_loss
@@ -44,10 +44,10 @@ def main():
     trainloader = DataLoader(road_train, batch_size=batch_size, shuffle=True,
                              num_workers=num_workers, drop_last=True)  # define traindata
     road_val = IsprsSegmentation(base_dir=root_data, split='val', transform=composed_transforms_val)  # get data
-    valloader = DataLoader(road_val, batch_size=batch_size, shuffle=True, num_workers=num_workers, drop_last=True)  # define traindata
+    valloader = DataLoader(road_val, batch_size=batch_size, shuffle=False, num_workers=num_workers, drop_last=True)  # define traindata
 
     if use_gpu:
-        model = torch.nn.DataParallel(frame_work, device_ids=gpu_list)  # use gpu to train
+        model = torch.nn.DataParallel(seg_model, device_ids=gpu_list)  # use gpu to train
         model_id = 0
         if find_new_file(model_dir) is not None:
             model.load_state_dict(torch.load(find_new_file(model_dir)))
@@ -56,7 +56,7 @@ def main():
             model_id = int(model_id[0])
         model.cuda()
     else:
-        model = frame_work
+        model = seg_model
         model_id = 0
         if find_new_file(model_dir) is not None:
             model.load_state_dict(torch.load(find_new_file(model_dir)))
@@ -113,7 +113,7 @@ def main():
         writer.add_scalar('train_loss', running_loss / batch_num, epoch)
 
         if epoch % save_iter == 0:
-            torch.save(model.state_dict(), os.path.join(model_dir, '%d.pth' % (model_id + epoch + 1)))
+            torch.save(model.state_dict(), os.path.join(model_dir, '%d.pth' % (model_id + epoch)))
             val_miou, val_acc, val_f1, val_loss = eval(valloader, model, criterion, epoch)
             val_miou_true, val_acc_true, val_f1_true = image_infer(model, epoch)
             # val_miou_true, val_acc_true, val_f1_true = 0.0, 0.0, 0.0
@@ -214,7 +214,7 @@ def adjust_learning_rate(base_lr, optimizer, epoch, model_id, power):
 
 
 if __name__ == '__main__':
-    frame_work = get_net(model_name, input_bands, num_class, img_size)
+    seg_model = get_net(model_name, img_size)
     if os.path.exists(model_dir) is False:
         os.mkdir(model_dir)
     main()

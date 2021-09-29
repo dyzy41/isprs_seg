@@ -2,19 +2,18 @@ import os
 batch_size = 32  # 设置批量大小
 use_gpu = True  # 是否使用use_gpu
 img_size = 512  # 输入图片大小
-overlap = 64
-epoches = 800
+epoches = 800   #迭代次数
 base_lr = 0.001  # 学习率
 weight_decay = 2e-5
 momentum = 0.9
 power = 0.99
-gpu_id = '0, 1'
+gpu_id = '0, 1'  #gpu 序号
 
-loss_type = 'ce'
-save_iter = 20
+loss_type = 'ce'  #loss函数
+save_iter = 20    #每隔多少次测试一下验证集，同时计算验证集的切片图像精度和完整的大图精度
 num_workers = 1
 val_visual = True
-image_driver = 'pillow'   #pillow, gdal
+image_driver = 'pillow'   #pillow, gdal， 读取图像的函数
 
 num_class = 6  # some parameters
 model_name = 'DeepLabV3Plus'  # ' unet, res_unet_psp, res_unet'
@@ -27,7 +26,7 @@ else:
     std = (0.215084, 0.408135, 0.409993)  # 标准化参数
 
 #data path
-root_data = '../vai_data/cut_data'
+root_data = '../vai_data/cut_data'   #相关的参数
 dataset = 'massroad'
 exp_name = '0915'
 save_dir = '../{}_files'.format(exp_name)
