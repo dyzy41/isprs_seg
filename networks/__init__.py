@@ -7,3 +7,4 @@ from networks.danet import DANet
 from networks.denseaspp import DenseASPP
 from networks.dunet import DUNet
 from networks.encnet import EncNet
+from networks.exnet import EXNet

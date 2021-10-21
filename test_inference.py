@@ -3,9 +3,11 @@ import shutil
 import tqdm
 import cv2
 import numpy as np
+
+import tools.utils
 from tools.utils import label_mapping
 from config import *
-from networks.get_net import get_net
+from networks.get_model import get_net
 from collections import OrderedDict
 import yimage
 import tools.transform as tr
@@ -135,11 +137,11 @@ def load_model(model_path):
     model = get_net(model_name, input_bands, num_class, img_size)
     # model = torch.nn.DataParallel(model, device_ids=[0])
     state_dict = torch.load(model_path)
-    new_state_dict = OrderedDict()
-    for k, v in state_dict.items():
-        name = k[7:]
-        new_state_dict[name] = v
-    model.load_state_dict(new_state_dict)
+    # new_state_dict = OrderedDict()
+    # for k, v in state_dict.items():
+    #     name = k[7:]
+    #     new_state_dict[name] = v
+    model.load_state_dict(state_dict)
     if use_gpu:
         model.cuda()
     model.eval()
@@ -155,27 +157,17 @@ def img_transforms(img):
     sample = transform(sample)
     return sample['image']
 
-def parse_color_table(color_txt):
-    f = open(color_txt, 'r').readlines()
-    color_table = []
-    for info in f:
-        x = info.split('#')[0].split('/')
-        color_table.append((int(x[0]), int(x[1]), int(x[2])))
-    return color_table
-
 if __name__ == '__main__':
     test_path = '../vai_data/train_img/test'
-    model_path = '../0915_files/DeepLabV3Plus_3/pth_DeepLabV3Plus/281.pth'
-    color_txt = '../vai_data/color_table_isprs.txt'
-    color_table = parse_color_table(color_txt)
+    model_path = '../1020_files/EXNet_3/pth_EXNet/371.pth'
     if os.path.exists(save_path) is True:
         shutil.rmtree(save_path)
         os.mkdir(save_path)
-        os.mkdir(os.path.join(save_path, 'color_big'))
+        # os.mkdir(os.path.join(save_path, 'color_big'))
         os.mkdir(os.path.join(save_path, 'gray_big'))
     else:
         os.mkdir(save_path)
-        os.mkdir(os.path.join(save_path, 'color_big'))
+        # os.mkdir(os.path.join(save_path, 'color_big'))
         os.mkdir(os.path.join(save_path, 'gray_big'))
 
     model = load_model(model_path)
@@ -194,5 +186,5 @@ if __name__ == '__main__':
         pred_gray = pred_gray[0].cpu().data.numpy().astype(np.int32)
         pred_vis = label_mapping(pred_gray)
         # cv2.imwrite(os.path.join(save_path,  'gray_big', name), pred_gray)
-        yimage.io.write_image(os.path.join(save_path,  'gray_big', name), pred_gray+1, color_table=color_table)
-        cv2.imwrite(os.path.join(save_path,  'color_big', name), pred_vis)
+        yimage.io.write_image(os.path.join(save_path,  'gray_big', name), pred_gray+1, color_table=tools.utils.parse_color_table())
+        # cv2.imwrite(os.path.join(save_path,  'color_big', name), pred_vis)

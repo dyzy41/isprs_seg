@@ -1,11 +1,7 @@
 from __future__ import division
-
-import os
-
-import cv2
+import yimage
 import torch
 import re
-import time
 import torchvision.transforms as standard_transforms
 from torch.utils.data import DataLoader
 import tqdm
@@ -19,9 +15,8 @@ from networks.get_model import get_net
 from config import *
 from tools.cal_iou import evaluate
 from tools.losses import get_loss
-from tools.draw_pic import draw_pic
 import numpy as np
-from tools.utils import label_mapping, accuracy
+from tools.utils import label_mapping
 
 os.environ["CUDA_VISIBLE_DEVICES"] = gpu_id
 gpu_list = [i for i in range(len(gpu_id.split(',')))]
@@ -44,10 +39,13 @@ def main():
     trainloader = DataLoader(road_train, batch_size=batch_size, shuffle=True,
                              num_workers=num_workers, drop_last=True)  # define traindata
     road_val = IsprsSegmentation(base_dir=root_data, split='val', transform=composed_transforms_val)  # get data
-    valloader = DataLoader(road_val, batch_size=batch_size, shuffle=False, num_workers=num_workers, drop_last=True)  # define traindata
+    valloader = DataLoader(road_val, batch_size=batch_size, shuffle=True, num_workers=num_workers, drop_last=True)  # define traindata
 
     if use_gpu:
-        model = torch.nn.DataParallel(seg_model, device_ids=gpu_list)  # use gpu to train
+        print(gpu_list)
+        # model = torch.nn.DataParallel(frame_work, device_ids=gpu_list)  # use gpu to train
+        model = frame_work
+        # model = torch.nn.parallel.DistributedDataParallel(model, device_ids=gpu_list)
         model_id = 0
         if find_new_file(model_dir) is not None:
             model.load_state_dict(torch.load(find_new_file(model_dir)))
@@ -56,7 +54,7 @@ def main():
             model_id = int(model_id[0])
         model.cuda()
     else:
-        model = seg_model
+        model = frame_work
         model_id = 0
         if find_new_file(model_dir) is not None:
             model.load_state_dict(torch.load(find_new_file(model_dir)))
@@ -113,7 +111,7 @@ def main():
         writer.add_scalar('train_loss', running_loss / batch_num, epoch)
 
         if epoch % save_iter == 0:
-            torch.save(model.state_dict(), os.path.join(model_dir, '%d.pth' % (model_id + epoch)))
+            torch.save(model.state_dict(), os.path.join(model_dir, '%d.pth' % (model_id + epoch + 1)))
             val_miou, val_acc, val_f1, val_loss = eval(valloader, model, criterion, epoch)
             val_miou_true, val_acc_true, val_f1_true = image_infer(model, epoch)
             # val_miou_true, val_acc_true, val_f1_true = 0.0, 0.0, 0.0
@@ -142,8 +140,8 @@ def eval(valloader, model, criterion, epoch):
         if os.path.exists(os.path.join(save_dir, 'val_visual')) is False:
             os.mkdir(os.path.join(save_dir, 'val_visual'))
         os.mkdir(os.path.join(save_dir, 'val_visual', str(epoch)))
-        os.mkdir(os.path.join(save_dir, 'val_visual', str(epoch), 'gray'))
-        os.mkdir(os.path.join(save_dir, 'val_visual', str(epoch), 'color'))
+        os.mkdir(os.path.join(save_dir, 'val_visual', str(epoch), 'slice'))
+        # os.mkdir(os.path.join(save_dir, 'val_visual', str(epoch), 'color'))
     with torch.no_grad():
         batch_num = 0
         val_loss = 0.0
@@ -167,11 +165,13 @@ def eval(valloader, model, criterion, epoch):
             if val_visual:
                 for kk in range(len(names)):
                     pred_sub = pred[kk, :, :]
-                    pred_vis = label_mapping(pred_sub)
-                    cv2.imwrite(os.path.join(save_dir, 'val_visual', str(epoch), 'gray', names[kk]), pred_sub)
-                    cv2.imwrite(os.path.join(save_dir, 'val_visual', str(epoch), 'color', names[kk]), pred_vis)
+                    # pred_vis = label_mapping(pred_sub)
+                    # cv2.imwrite(os.path.join(save_dir, 'val_visual', str(epoch), 'gray', names[kk]), pred_sub)
+                    yimage.io.write_image(os.path.join(save_dir, 'val_visual', str(epoch), 'slice', names[kk]), pred_sub + 1,
+                                          color_table=tools.utils.parse_color_table())
+                    # cv2.imwrite(os.path.join(save_dir, 'val_visual', str(epoch), 'color', names[kk]), pred_vis)
         # import pudb;pu.db
-        val_miou, val_acc, val_f1 = evaluate(os.path.join(root_data, 'label_val'), os.path.join(save_dir, 'val_visual', str(epoch), 'gray'), num_class)
+        val_miou, val_acc, val_f1 = evaluate(os.path.join(root_data, 'label_val'), os.path.join(save_dir, 'val_visual', str(epoch), 'slice'), num_class)
         val_loss = val_loss/batch_num
     return val_miou, val_acc, val_f1, val_loss
 
@@ -180,16 +180,16 @@ def image_infer(model, epoch):
     model.eval()
     imgs = os.listdir(val_path)
     if val_visual:
-        os.mkdir(os.path.join(save_dir, 'val_visual', str(epoch), 'gray_big'))
-        os.mkdir(os.path.join(save_dir, 'val_visual', str(epoch), 'color_big'))
+        if os.path.exists(os.path.join(save_dir, 'val_visual', str(epoch))) is False:
+            os.mkdir(os.path.join(save_dir, 'val_visual'))
+            os.mkdir(os.path.join(save_dir, 'val_visual', str(epoch)))
+        os.mkdir(os.path.join(save_dir, 'val_visual', str(epoch), 'big'))
     for img_path in tqdm.tqdm(imgs):
         output = slide_pred(model, os.path.join(val_path, img_path), num_class, img_size, overlap)
         pred_gray = torch.argmax(output, 1)
         pred_gray = pred_gray[0].cpu().data.numpy().astype(np.int32)
-        pred_vis = label_mapping(pred_gray)
-        cv2.imwrite(os.path.join(save_dir, 'val_visual', str(epoch), 'gray_big', img_path), pred_gray)
-        cv2.imwrite(os.path.join(save_dir, 'val_visual', str(epoch), 'color_big', img_path), pred_vis)
-    val_miou_true, val_acc_true, val_f1_true = evaluate(val_gt, os.path.join(save_dir, 'val_visual', str(epoch), 'gray_big'), num_class)
+        yimage.io.write_image(os.path.join(save_dir, 'val_visual', str(epoch), 'big', img_path), pred_gray + 1, color_table=tools.utils.parse_color_table())
+    val_miou_true, val_acc_true, val_f1_true = evaluate(val_gt, os.path.join(save_dir, 'val_visual', str(epoch), 'big'), num_class)
     return val_miou_true, val_acc_true, val_f1_true
 
 
@@ -214,7 +214,7 @@ def adjust_learning_rate(base_lr, optimizer, epoch, model_id, power):
 
 
 if __name__ == '__main__':
-    seg_model = get_net(model_name, img_size)
+    frame_work = get_net(model_name, input_bands, num_class, img_size)
     if os.path.exists(model_dir) is False:
         os.mkdir(model_dir)
     main()

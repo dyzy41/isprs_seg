@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from tools.utils import label_mapping
 from config import *
-from networks.get_net import get_net
+from networks.get_model import get_net
 from collections import OrderedDict
 import yimage
 import tools.transform as tr

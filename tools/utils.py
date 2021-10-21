@@ -20,6 +20,13 @@ else:
         img = np.asarray(img)
         return img
 
+def parse_color_table():
+    f = open(color_txt, 'r').readlines()
+    color_table = []
+    for info in f:
+        x = info.split('#')[0].split('/')
+        color_table.append((int(x[0]), int(x[1]), int(x[2])))
+    return color_table
 
 def label_mapping(label_im):
     # colorize = np.zeros([2, 3], dtype=np.int64)

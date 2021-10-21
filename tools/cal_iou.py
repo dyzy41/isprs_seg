@@ -2,7 +2,7 @@ import os
 from PIL import Image
 import numpy as np
 from sklearn.metrics import f1_score, accuracy_score, classification_report
-
+import yimage
 
 
 # def accuracy(preds, label):
@@ -87,12 +87,16 @@ def evaluate(val_gt, pred_dir, num_class):
     pred_all = []
     gt_all = []
     for name in names:
-        pred = Image.open(os.path.join(pred_dir, name)).convert('L')
+        # pred = Image.open(os.path.join(pred_dir, name)).convert('L')
+        pred = yimage.io.read_image(os.path.join(pred_dir, name))
+        pred = pred-1
         # gt = Image.open(gt_name).convert('L')
-        gt = Image.open(os.path.join(val_gt, name)).convert('L')
+        gt = yimage.io.read_image(os.path.join(val_gt, name))
+        # gt = Image.open(os.path.join(val_gt, name)).convert('L')
         # pred = pred.resize(gt.size)
-        pred = np.array(pred, dtype=np.int64)
-        gt = np.array(gt, dtype=np.int64)
+        # pred = np.array(pred, dtype=np.int64)
+        # pred = pred
+        # gt = np.array(gt, dtype=np.int64)
         acc, pix = accuracy(pred, gt)
         pred_all += list(pred.flatten())
         gt_all += list(gt.flatten())
