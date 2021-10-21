@@ -91,11 +91,23 @@ class EDBlock(nn.Module):
         self.in_c = in_c
         self.out_c = out_c
         self.down2 = nn.MaxPool2d((2, 2))
-        self.transC2 = nn.ConvTranspose2d(out_c, out_c, 3, 2, 2)
+        # self.transC2 = nn.ConvTranspose2d(out_c, out_c, 3, 2, 2)
+        self.transC2 = nn.Sequential(nn.UpsamplingBilinear2d(scale_factor=2),
+                                     nn.Conv2d(out_c, out_c, 3, 1, 1),
+                                     nn.BatchNorm2d(out_c),
+                                     nn.ReLU())
         self.down4 = nn.MaxPool2d((4, 4))
-        self.transC4 = nn.ConvTranspose2d(out_c, out_c, 3, 4, 4)
+        # self.transC4 = nn.ConvTranspose2d(out_c, out_c, 3, 4, 4)
+        self.transC4 = nn.Sequential(nn.UpsamplingBilinear2d(scale_factor=4),
+                                     nn.Conv2d(out_c, out_c, 3, 1, 1),
+                                     nn.BatchNorm2d(out_c),
+                                     nn.ReLU())
         self.down8 = nn.MaxPool2d((8, 8))
-        self.transC8 = nn.ConvTranspose2d(out_c, out_c, 3, 8, 8)
+        # self.transC8 = nn.ConvTranspose2d(out_c, out_c, 3, 8, 8)
+        self.transC8 = nn.Sequential(nn.UpsamplingBilinear2d(scale_factor=8),
+                                     nn.Conv2d(out_c, out_c, 3, 1, 1),
+                                     nn.BatchNorm2d(out_c),
+                                     nn.ReLU())
         self.relu = nn.ReLU()
         self.conv = nn.Conv2d(in_c, out_c, 1, 1, 1)
         self.bn = nn.BatchNorm2d(out_c)
@@ -115,42 +127,6 @@ class EDBlock(nn.Module):
         x8 = self.transC8(x8)
 
         x_conv = self.relu(self.bn(self.conv(x)))
-        x_out = x2+x4+x8+x_conv
-
-        return x_out
-
-
-class EDBlock(nn.Module):
-    def __init__(self, in_c, out_c):
-        super(EDBlock, self).__init__()
-        self.in_c = in_c
-        self.out_c = out_c
-        self.down2 = nn.MaxPool2d((2, 2))
-        self.transC2 = nn.ConvTranspose2d(out_c, out_c, 2, 2, 2)
-        self.down4 = nn.MaxPool2d((4, 4))
-        self.transC4 = nn.ConvTranspose2d(out_c, out_c, 2, 4, 3)
-        self.down8 = nn.MaxPool2d((8, 8))
-        self.transC8 = nn.ConvTranspose2d(out_c, out_c, 2, 8, 5)
-        self.relu = nn.ReLU()
-        self.conv = nn.Conv2d(in_c, out_c, 1, 1, 1)
-        self.conv2 = nn.Conv2d(in_c, out_c, 1, 1, 0)
-        self.bn = nn.BatchNorm2d(out_c)
-
-    
-    def forward(self, x):
-        x2 = self.down2(x)
-        x2 = self.relu(self.bn(self.conv(x2)))
-        x2 = self.transC2(x2)
-
-        x4 = self.down4(x)
-        x4 = self.relu(self.bn(self.conv(x4)))
-        x4 = self.transC4(x4)
-
-        x8 = self.down8(x)
-        x8 = self.relu(self.bn(self.conv(x8)))
-        x8 = self.transC8(x8)
-
-        x_conv = self.relu(self.bn(self.conv2(x)))
         x_out = x2+x4+x8+x_conv
 
         return x_out
