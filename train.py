@@ -114,7 +114,7 @@ def main():
         writer.add_scalar('train_loss', running_loss / batch_num, epoch)
 
         if epoch % param_dict['save_iter'] == 0:
-            torch.save(model.state_dict(), os.path.join(param_dict['model_dir'], '%d.pth' % (model_id + epoch + 1)))
+            torch.save(model.state_dict(), os.path.join(param_dict['model_dir'], '%d.pth' % (model_id + epoch)))
             val_miou, val_acc, val_f1, val_loss = eval(valloader, model, criterion, epoch)
             val_miou_true, val_acc_true, val_f1_true = image_infer(model, epoch)
             # val_miou_true, val_acc_true, val_f1_true = 0.0, 0.0, 0.0
