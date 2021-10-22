@@ -104,12 +104,12 @@ class EDBlock(nn.Module):
                                      nn.ReLU())
         self.down8 = nn.MaxPool2d((8, 8))
         # self.transC8 = nn.ConvTranspose2d(out_c, out_c, 3, 8, 8)
-        self.transC8 = nn.Sequential(nn.UpsamplingBilinear2d(scale_factor=8),
+        self.transC8 = nn.Sequential(nn.Upsample(scale_factor=8),
                                      nn.Conv2d(out_c, out_c, 3, 1, 1),
                                      nn.BatchNorm2d(out_c),
                                      nn.ReLU())
         self.relu = nn.ReLU()
-        self.conv = nn.Conv2d(in_c, out_c, 1, 1, 1)
+        self.conv = nn.Conv2d(in_c, out_c, 1, 1, 0)
         self.bn = nn.BatchNorm2d(out_c)
 
     
@@ -230,7 +230,7 @@ class _DeepLabHead(nn.Module):
         return self.block(torch.cat([x, c1], dim=1))
 
 if __name__ == '__main__':
-    net = DeepLabV3Plus(num_class=6)
+    net = EXNet(in_c=3, num_class=6)
     # nrte = meca(64, 3)
 
     x = torch.randn(2, 3, 256, 256)

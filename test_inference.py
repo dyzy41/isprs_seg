@@ -6,7 +6,7 @@ import numpy as np
 
 import tools.utils
 from tools.utils import label_mapping
-from config import *
+# from config import *
 from networks.get_model import get_net
 from collections import OrderedDict
 import yimage
@@ -15,6 +15,7 @@ import torchvision.transforms as transforms
 import torch
 import torch.nn.functional as F
 from tools.utils import read_image
+
 
 def tta_inference(inp, model, num_classes=8, scales=[1.0], flip=True):
     b, _, h, w = inp.size()
@@ -134,7 +135,7 @@ def slide_pred(model, image_path, num_classes=6, crop_size=512, overlap=256, sca
 
 def load_model(model_path):
     # os.environ["CUDA_VISIBLE_DEVICES"] = '1'
-    model = get_net(model_name, input_bands, num_class, img_size)
+    model = get_net(param_dict['model_name'], param_dict['input_bands'], param_dict['num_class'], param_dict['img_size'])
     # model = torch.nn.DataParallel(model, device_ids=[0])
     state_dict = torch.load(model_path)
     # new_state_dict = OrderedDict()
@@ -142,7 +143,7 @@ def load_model(model_path):
     #     name = k[7:]
     #     new_state_dict[name] = v
     model.load_state_dict(state_dict)
-    if use_gpu:
+    if param_dict['use_gpu']:
         model.cuda()
     model.eval()
     return model
@@ -152,23 +153,27 @@ def img_transforms(img):
     img = np.array(img).astype(np.float32)
     sample = {'image': img}
     transform = transforms.Compose([
-        tr.Normalize(mean=mean, std=std),
+        tr.Normalize(mean=param_dict['mean'], std=param_dict['std']),
         tr.ToTensor()])
     sample = transform(sample)
     return sample['image']
 
 if __name__ == '__main__':
+    from tools.parse_config_yaml import parse_yaml
+    param_dict = parse_yaml('config.yaml')
+
     test_path = '../vai_data/train_img/test'
     model_path = '../1020_files/EXNet_3/pth_EXNet/371.pth'
-    if os.path.exists(save_path) is True:
-        shutil.rmtree(save_path)
-        os.mkdir(save_path)
-        # os.mkdir(os.path.join(save_path, 'color_big'))
-        os.mkdir(os.path.join(save_path, 'gray_big'))
+
+    if os.path.exists(param_dict['save_path']) is True:
+        shutil.rmtree(param_dict['save_path'])
+        os.mkdir(param_dict['save_path'])
+        # os.mkdir(os.path.join(param_dict['save_path'], 'color_big'))
+        os.mkdir(os.path.join(param_dict['save_path'], 'gray_big'))
     else:
-        os.mkdir(save_path)
-        # os.mkdir(os.path.join(save_path, 'color_big'))
-        os.mkdir(os.path.join(save_path, 'gray_big'))
+        os.mkdir(param_dict['save_path'])
+        # os.mkdir(os.path.join(param_dict['save_path'], 'color_big'))
+        os.mkdir(os.path.join(param_dict['save_path'], 'gray_big'))
 
     model = load_model(model_path)
 
@@ -185,6 +190,6 @@ if __name__ == '__main__':
         pred_gray = torch.argmax(output, 1)
         pred_gray = pred_gray[0].cpu().data.numpy().astype(np.int32)
         pred_vis = label_mapping(pred_gray)
-        # cv2.imwrite(os.path.join(save_path,  'gray_big', name), pred_gray)
-        yimage.io.write_image(os.path.join(save_path,  'gray_big', name), pred_gray+1, color_table=tools.utils.parse_color_table())
+        # cv2.imwrite(os.path.join(param_dict['save_path'],  'gray_big', name), pred_gray)
+        yimage.io.write_image(os.path.join(param_dict['save_path'],  'gray_big', name), pred_gray+1, color_table=tools.utils.parse_color_table(param_dict['color_txt']))
         # cv2.imwrite(os.path.join(save_path,  'color_big', name), pred_vis)

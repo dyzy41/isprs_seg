@@ -4,7 +4,11 @@ import torch, cv2
 import numpy as np
 import torch.nn as nn
 import matplotlib.pyplot as plt
-from config import *
+# from config import *
+# from tools.parse_config_yaml import parse_yaml
+# param_dict = parse_yaml('config.yaml')
+
+image_driver = 'gdal'
 if image_driver == 'gdal':
     import yimage
     def read_image(path, state='img'):
@@ -20,7 +24,7 @@ else:
         img = np.asarray(img)
         return img
 
-def parse_color_table():
+def parse_color_table(color_txt):
     f = open(color_txt, 'r').readlines()
     color_table = []
     for info in f:

@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from tools.utils import label_mapping
-from config import *
+# from config import *
 from networks.get_model import get_net
 from collections import OrderedDict
 import yimage
@@ -11,6 +11,8 @@ import torch
 import torch.nn.functional as F
 from PIL import Image
 from tools.utils import read_image
+# from tools.parse_config_yaml import parse_yaml
+# param_dict = parse_yaml('config.yaml')
 
 def tta_inference(inp, model, num_classes=8, scales=[1.0], flip=True):
     b, _, h, w = inp.size()
@@ -42,11 +44,11 @@ def pred_img(model, image):
     return output
 
 
-def slide_pred(model, image_path, num_classes=6, crop_size=512, overlap=256, scales=[1.0], flip=True):
+def slide_pred(param_dict, model, image_path, num_classes=6, crop_size=512, overlap=256, scales=[1.0], flip=True, ):
     # scale_image = yimage.io.read_image(image_path)
     scale_image = read_image(image_path).astype(np.float32)
     # scale_image = np.asarray(Image.open(image_path).convert('RGB')).astype(np.float32)
-    scale_image = img_transforms(scale_image)
+    scale_image = img_transforms(scale_image, param_dict)
     scale_image = scale_image.unsqueeze(0).cuda()
 
     N, C, H_, W_ = scale_image.shape
@@ -128,25 +130,25 @@ def slide_pred(model, image_path, num_classes=6, crop_size=512, overlap=256, sca
 
     return full_probs
 
-def load_model(model_path):
-    model = get_net(model_name, input_bands, num_class, img_size)
+def load_model(model_path, param_dict):
+    model = get_net(param_dict['model_name'], param_dict['input_bands'], param_dict['num_class'], param_dict['img_size'])
     state_dict = torch.load(model_path)
     new_state_dict = OrderedDict()
     for k, v in state_dict.items():
         name = k[7:]
         new_state_dict[name] = v
     model.load_state_dict(new_state_dict)
-    if use_gpu:
+    if param_dict['use_gpu']:
         model.cuda()
     model.eval()
     return model
 
 
-def img_transforms(img):
+def img_transforms(img, param_dict):
     img = np.array(img).astype(np.float32)
     sample = {'image': img}
     transform = transforms.Compose([
-        tr.Normalize(mean=mean, std=std),
+        tr.Normalize(mean=param_dict['mean'], std=param_dict['std']),
         tr.ToTensor()])
     sample = transform(sample)
     return sample['image']
@@ -156,17 +158,19 @@ if __name__ == '__main__':
     # lab_path = r'Y:\private\dongsj\0sjcode\code0906_vaiseg\vai_data\val_gt\top_mosaic_09cm_area1.tif'
     # img_path = r'Y:\private\dongsj\0sjcode\code0906_vaiseg\vai_data\train_img\val\top_mosaic_09cm_area1.tif'
     # model_path = r'Y:\private\dongsj\0sjcode\code0906_vaiseg\0913_files\DeepLabV3Plus_3\pth_DeepLabV3Plus\101.pth'
+    from tools.parse_config_yaml import parse_yaml
+    param_dict = parse_yaml('config.yaml')
     lab_path = '/nfs/project/netdisk/192.168.0.31/d/private/dongsj/0sjcode/code0906_vaiseg/vai_data/val_gt/top_mosaic_09cm_area1.tif'
     img_path = '/nfs/project/netdisk/192.168.0.31/d/private/dongsj/0sjcode/code0906_vaiseg/vai_data/train_img/val/top_mosaic_09cm_area1.tif'
     model_path = '/nfs/project/netdisk/192.168.0.31/d/private/dongsj/0sjcode/code0906_vaiseg/0913_files/DeepLabV3Plus_3/pth_DeepLabV3Plus/101.pth'
 
-    model = load_model(model_path)
+    model = load_model(model_path, param_dict)
     # image = yimage.io.read_image(img_path)
     image = np.asarray(Image.open(img_path).convert('RGB')).astype(np.float32)
 
     # image = img_transforms(image)
     # image = image.unsqueeze(0).cuda()
-    pred = slide_pred(
+    pred = slide_pred(param_dict,
         model=model,
         image_path=img_path,
         num_classes=6,
