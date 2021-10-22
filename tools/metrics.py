@@ -105,8 +105,7 @@ def metrics(confu_mat_total, save_path='./'):
 if __name__ == '__main__':
     boundary_id = 0
     p_gt = '../../vai_data/gt_nobd_2'
-    # p_pred = '../../0915_files/val_visual/220/gray_big'
-    p_pred = '../../result/gray_big'
+    p_pred = '../../resultsucnet_val/gray_big'
 
     gts = sorted(os.listdir(p_gt))
     preds = sorted(os.listdir(p_pred))
