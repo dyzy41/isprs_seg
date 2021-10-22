@@ -13,7 +13,6 @@ import tools
 from tensorboardX import SummaryWriter
 from inference import slide_pred
 from networks.get_model import get_net
-# from config import *
 from tools.cal_iou import evaluate
 from tools.losses import get_loss
 import numpy as np
