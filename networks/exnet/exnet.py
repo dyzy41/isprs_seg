@@ -19,7 +19,7 @@ class _FCNHead(nn.Module):
 
     def forward(self, x):
         return self.block(x)
-    
+
 
 class _ASPPConv(nn.Module):
     def __init__(self, in_cannels, num_classannels, atrous_rate, norm_layer):
@@ -91,28 +91,42 @@ class EDBlock(nn.Module):
         self.in_c = in_c
         self.out_c = out_c
         self.down2 = nn.MaxPool2d((2, 2))
-        # self.transC2 = nn.ConvTranspose2d(out_c, out_c, 3, 2, 2)
-        self.transC2 = nn.Sequential(nn.UpsamplingBilinear2d(scale_factor=2),
+        # self.transC2 = nn.ConvTranspose2d(out_c, out_c, 2, 2, 2)
+        self.transC2 = nn.Sequential(nn.Upsample(scale_factor=2),
                                      nn.Conv2d(out_c, out_c, 3, 1, 1),
                                      nn.BatchNorm2d(out_c),
                                      nn.ReLU())
         self.down4 = nn.MaxPool2d((4, 4))
-        # self.transC4 = nn.ConvTranspose2d(out_c, out_c, 3, 4, 4)
-        self.transC4 = nn.Sequential(nn.UpsamplingBilinear2d(scale_factor=4),
+        # self.transC4 = nn.ConvTranspose2d(out_c, out_c, 2, 4, 3)
+        self.transC4 = nn.Sequential(nn.Upsample(scale_factor=2),
                                      nn.Conv2d(out_c, out_c, 3, 1, 1),
                                      nn.BatchNorm2d(out_c),
-                                     nn.ReLU())
+                                     nn.ReLU(),
+                                     nn.Upsample(scale_factor=2),
+                                     nn.Conv2d(out_c, out_c, 3, 1, 1),
+                                     nn.BatchNorm2d(out_c),
+                                     nn.ReLU()
+                                     )
         self.down8 = nn.MaxPool2d((8, 8))
-        # self.transC8 = nn.ConvTranspose2d(out_c, out_c, 3, 8, 8)
-        self.transC8 = nn.Sequential(nn.Upsample(scale_factor=8),
+        # self.transC8 = nn.ConvTranspose2d(out_c, out_c, 2, 8, 5)
+        self.transC8 = nn.Sequential(nn.Upsample(scale_factor=2),
                                      nn.Conv2d(out_c, out_c, 3, 1, 1),
                                      nn.BatchNorm2d(out_c),
-                                     nn.ReLU())
+                                     nn.ReLU(),
+                                     nn.Upsample(scale_factor=2),
+                                     nn.Conv2d(out_c, out_c, 3, 1, 1),
+                                     nn.BatchNorm2d(out_c),
+                                     nn.ReLU(),
+                                     nn.Upsample(scale_factor=2),
+                                     nn.Conv2d(out_c, out_c, 3, 1, 1),
+                                     nn.BatchNorm2d(out_c),
+                                     nn.ReLU()
+                                     )
         self.relu = nn.ReLU()
         self.conv = nn.Conv2d(in_c, out_c, 1, 1, 0)
         self.bn = nn.BatchNorm2d(out_c)
 
-    
+
     def forward(self, x):
         x2 = self.down2(x)
         x2 = self.relu(self.bn(self.conv(x2)))
@@ -164,17 +178,17 @@ class EXNet(nn.Module):
         self.head = _DeepLabHead(num_class, c1_channels=24, **kwargs)
         if aux:
             self.auxlayer = _FCNHead(728, num_class)
-        
+
         self.edb1 = EDBlock(24, 48)
-        self.down1 = nn.Sequential(nn.Conv2d(48, 48, 3, 2, 1), 
+        self.down1 = nn.Sequential(nn.Conv2d(48, 48, 3, 2, 1),
         nn.BatchNorm2d(48),
         nn.ReLU())
         self.edb2 = EDBlock(48, 120)
-        self.down2 = nn.Sequential(nn.Conv2d(120, 120, 3, 2, 1), 
+        self.down2 = nn.Sequential(nn.Conv2d(120, 120, 3, 2, 1),
         nn.BatchNorm2d(120),
         nn.ReLU())
         self.edb3 = EDBlock(120, 352)
-        self.down3 = nn.Sequential(nn.Conv2d(352, 352, 3, 2, 1), 
+        self.down3 = nn.Sequential(nn.Conv2d(352, 352, 3, 2, 1),
         nn.BatchNorm2d(352),
         nn.ReLU())
 
@@ -203,9 +217,9 @@ class EXNet(nn.Module):
         top_f = F.interpolate(top_f, scale_factor=8, mode='bilinear', align_corners=True)
 
         concat_f = torch.cat([c1, top_f], dim=1)
-        
+
         out_f = self.last(concat_f)
-        
+
         out_f = F.interpolate(out_f, size, mode='bilinear', align_corners=True)
         return out_f
 
@@ -230,7 +244,7 @@ class _DeepLabHead(nn.Module):
         return self.block(torch.cat([x, c1], dim=1))
 
 if __name__ == '__main__':
-    net = EXNet(in_c=3, num_class=6)
+    net = DeepLabV3Plus(num_class=6)
     # nrte = meca(64, 3)
 
     x = torch.randn(2, 3, 256, 256)
