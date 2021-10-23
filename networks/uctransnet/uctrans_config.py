@@ -11,7 +11,7 @@ import ml_collections
 ## PARAMETERS OF THE MODEL
 save_model = True
 tensorboard = True
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 use_cuda = torch.cuda.is_available()
 seed = 666
 os.environ['PYTHONHASHSEED'] = str(seed)
