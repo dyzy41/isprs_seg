@@ -81,7 +81,7 @@ class U_Net(nn.Module):
 
         self.Conv = nn.Conv2d(filters[0], num_class, kernel_size=3, stride=1, padding=1)
 
-        self.active = torch.nn.Sigmoid()
+        self.active = torch.nn.Softmax()
 
     def forward(self, x):
         e1 = self.Conv1(x)

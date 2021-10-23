@@ -147,7 +147,7 @@ class Res_UNet_101(nn.Module):
         self.in_c = 3
         self.num_class = num_class
         self.bilinear = bilinear
-        self.backbone = get_model('resnet50')
+        self.backbone = get_model('resnet101')
 
         self.inc = DoubleConv(in_c, 64)
         self.down1 = Down(64, 128)
@@ -181,7 +181,7 @@ class Res_UNet_152(nn.Module):
         self.in_c = 3
         self.num_class = num_class
         self.bilinear = bilinear
-        self.backbone = get_model('resnet50')
+        self.backbone = get_model('resnet152')
 
         self.inc = DoubleConv(in_c, 64)
         self.down1 = Down(64, 128)
