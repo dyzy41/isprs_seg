@@ -47,7 +47,7 @@ def pred_img(model, image):
     return output
 
 
-def slide_pred(model, image_path, num_classes=6, crop_size=512, overlap=256, scales=[1.0], flip=True):
+def slide_pred(model, image_path, num_classes=6, crop_size=512, overlap=256, scales=[1.0], flip=True, file_name=None):
     # scale_image = yimage.io.read_image(image_path)
     scale_image = read_image(image_path).astype(np.float32)
     # scale_image = np.asarray(Image.open(image_path).convert('RGB')).astype(np.float32)
@@ -65,6 +65,7 @@ def slide_pred(model, image_path, num_classes=6, crop_size=512, overlap=256, sca
 
     h = 0
     slide_finish = False
+    slice_id = 0
     while not slide_finish:
 
         if h + crop_size <= H_:
@@ -80,6 +81,11 @@ def slide_pred(model, image_path, num_classes=6, crop_size=512, overlap=256, sca
                     #
                     patch_pred_image = tta_inference(patch_image, model, num_classes=num_classes, scales=scales,
                                                      flip=flip)
+                    patch_gray = torch.argmax(patch_pred_image, 1)
+                    patch_gray = patch_gray[0].cpu().data.numpy().astype(np.int32)
+                    yimage.io.write_image(os.path.join(param_dict['save_path'], 'slice', '{}_{}.tif'.format(file_name[:-4], slice_id)), patch_gray + 1,
+                                          color_table=tools.utils.parse_color_table(param_dict['color_txt']))
+                    slice_id+=1
                     # patch_pred_image = pred_img(model, patch_image)
                     count_predictions[:, :, h:h + crop_size, w:w + crop_size] += 1
                     full_probs[:, :, h:h + crop_size, w:w + crop_size] += patch_pred_image
@@ -90,6 +96,13 @@ def slide_pred(model, image_path, num_classes=6, crop_size=512, overlap=256, sca
                     #
                     patch_pred_image = tta_inference(patch_image, model, num_classes=num_classes, scales=scales,
                                                      flip=flip)
+                    patch_gray = torch.argmax(patch_pred_image, 1)
+                    patch_gray = patch_gray[0].cpu().data.numpy().astype(np.int32)
+                    yimage.io.write_image(
+                        os.path.join(param_dict['save_path'], 'slice', '{}_{}.tif'.format(file_name[:-4], slice_id)),
+                        patch_gray + 1,
+                        color_table=tools.utils.parse_color_table(param_dict['color_txt']))
+                    slice_id += 1
                     # patch_pred_image = pred_img(model, patch_image)
                     count_predictions[:, :, h:h + crop_size, W_ - crop_size:W_] += 1
                     full_probs[:, :, h:h + crop_size, W_ - crop_size:W_] += patch_pred_image
@@ -110,6 +123,13 @@ def slide_pred(model, image_path, num_classes=6, crop_size=512, overlap=256, sca
                     #
                     patch_pred_image = tta_inference(patch_image, model, num_classes=num_classes, scales=scales,
                                                      flip=flip)
+                    patch_gray = torch.argmax(patch_pred_image, 1)
+                    patch_gray = patch_gray[0].cpu().data.numpy().astype(np.int32)
+                    yimage.io.write_image(
+                        os.path.join(param_dict['save_path'], 'slice', '{}_{}.tif'.format(file_name[:-4], slice_id)),
+                        patch_gray + 1,
+                        color_table=tools.utils.parse_color_table(param_dict['color_txt']))
+                    slice_id += 1
                     count_predictions[:, :, H_ - crop_size:H_, w:w + crop_size] += 1
                     full_probs[:, :, H_ - crop_size:H_, w:w + crop_size] += patch_pred_image
 
@@ -119,6 +139,13 @@ def slide_pred(model, image_path, num_classes=6, crop_size=512, overlap=256, sca
                     #
                     patch_pred_image = tta_inference(patch_image, model, num_classes=num_classes, scales=scales,
                                                      flip=flip)
+                    patch_gray = torch.argmax(patch_pred_image, 1)
+                    patch_gray = patch_gray[0].cpu().data.numpy().astype(np.int32)
+                    yimage.io.write_image(
+                        os.path.join(param_dict['save_path'], 'slice', '{}_{}.tif'.format(file_name[:-4], slice_id)),
+                        patch_gray + 1,
+                        color_table=tools.utils.parse_color_table(param_dict['color_txt']))
+                    slice_id += 1
                     count_predictions[:, :, H_ - crop_size:H_, W_ - crop_size:W_] += 1
                     full_probs[:, :, H_ - crop_size:H_, W_ - crop_size:W_] += patch_pred_image
 
@@ -163,17 +190,17 @@ if __name__ == '__main__':
     param_dict = parse_yaml('config.yaml')
 
     test_path = '../vai_data/train_img/test'
-    model_path = '../1020_files/EXNet_3/pth_EXNet/371.pth'
+    model_path = '../1022_files/Res_UNet_50_3/pth_Res_UNet_50/270.pth'
 
     if os.path.exists(param_dict['save_path']) is True:
         shutil.rmtree(param_dict['save_path'])
         os.mkdir(param_dict['save_path'])
-        # os.mkdir(os.path.join(param_dict['save_path'], 'color_big'))
-        os.mkdir(os.path.join(param_dict['save_path'], 'gray_big'))
+        os.mkdir(os.path.join(param_dict['save_path'], 'slice'))
+        os.mkdir(os.path.join(param_dict['save_path'], 'big'))
     else:
         os.mkdir(param_dict['save_path'])
-        # os.mkdir(os.path.join(param_dict['save_path'], 'color_big'))
-        os.mkdir(os.path.join(param_dict['save_path'], 'gray_big'))
+        os.mkdir(os.path.join(param_dict['save_path'], 'slice'))
+        os.mkdir(os.path.join(param_dict['save_path'], 'big'))
 
     model = load_model(model_path)
 
@@ -186,10 +213,11 @@ if __name__ == '__main__':
             crop_size=512,
             overlap=256,
             scales=[1.0],
-            flip=True)
+            flip=True,
+            file_name=name)
         pred_gray = torch.argmax(output, 1)
         pred_gray = pred_gray[0].cpu().data.numpy().astype(np.int32)
-        pred_vis = label_mapping(pred_gray)
+        # pred_vis = label_mapping(pred_gray)
         # cv2.imwrite(os.path.join(param_dict['save_path'],  'gray_big', name), pred_gray)
-        yimage.io.write_image(os.path.join(param_dict['save_path'],  'gray_big', name), pred_gray+1, color_table=tools.utils.parse_color_table(param_dict['color_txt']))
+        yimage.io.write_image(os.path.join(param_dict['save_path'],  'big', name), pred_gray+1, color_table=tools.utils.parse_color_table(param_dict['color_txt']))
         # cv2.imwrite(os.path.join(save_path,  'color_big', name), pred_vis)
