@@ -1,4 +1,5 @@
 from __future__ import division
+import sys
 import os
 import yimage
 import torch
@@ -33,16 +34,20 @@ def main():
         tr.Normalize(mean=param_dict['mean'], std=param_dict['std']),
         tr.ToTensor()])  # data pocessing and data augumentation
 
-    road_train = IsprsSegmentation(base_dir=param_dict['root_data'], split='train', transform=composed_transforms_train)  # get data
+    road_train = IsprsSegmentation(base_dir=param_dict['root_data'], split='train',
+                                   transform=composed_transforms_train)  # get data
     trainloader = DataLoader(road_train, batch_size=param_dict['batch_size'], shuffle=True,
                              num_workers=param_dict['num_workers'], drop_last=True)  # define traindata
-    road_val = IsprsSegmentation(base_dir=param_dict['root_data'], split='val', transform=composed_transforms_val)  # get data
-    valloader = DataLoader(road_val, batch_size=param_dict['batch_size'], shuffle=True, num_workers=param_dict['num_workers'], drop_last=True)  # define traindata
+    road_val = IsprsSegmentation(base_dir=param_dict['root_data'], split='val',
+                                 transform=composed_transforms_val)  # get data
+    valloader = DataLoader(road_val, batch_size=param_dict['batch_size'], shuffle=True,
+                           num_workers=param_dict['num_workers'], drop_last=True)  # define traindata
 
     if param_dict['use_gpu']:
-        print(gpu_list)
-        model = torch.nn.DataParallel(frame_work, device_ids=gpu_list)  # use gpu to train
-        # model = frame_work
+        if len(gpu_list) > 1:
+            model = torch.nn.DataParallel(frame_work, device_ids=gpu_list)  # use gpu to train
+        else:
+            model = frame_work
         # model = torch.nn.parallel.DistributedDataParallel(model, device_ids=gpu_list)
         model_id = 0
         if find_new_file(param_dict['model_dir']) is not None:
@@ -70,7 +75,8 @@ def main():
         for epoch in range(param_dict['epoches']):
             model.train()
             running_loss = 0.0
-            lr = adjust_learning_rate(param_dict['base_lr'], optimizer, epoch, model_id, param_dict['power'])  # adjust learning rate
+            lr = adjust_learning_rate(param_dict['base_lr'], optimizer, epoch, model_id,
+                                      param_dict['power'])  # adjust learning rate
             batch_num = 0
             for i, data in tqdm.tqdm(enumerate(trainloader)):  # get data
                 images, labels = data['image'], data['gt']
@@ -88,7 +94,7 @@ def main():
                 losses.backward()  #
                 optimizer.step()
                 running_loss += losses
-                if i % 50 == 0:
+                if i % 10 == 0:
                     grid_image = make_grid(images[:3].clone().cpu().data, 3, normalize=True)
                     writer.add_image('image', grid_image)
                     grid_image = make_grid(
@@ -165,30 +171,32 @@ def eval(valloader, model, criterion, epoch):
                     pred_sub = pred[kk, :, :]
                     # pred_vis = label_mapping(pred_sub)
                     # cv2.imwrite(os.path.join(save_dir, 'val_visual', str(epoch), 'gray', names[kk]), pred_sub)
-                    yimage.io.write_image(os.path.join(param_dict['save_dir_model'], 'val_visual', str(epoch), 'slice', names[kk]), pred_sub + 1,
-                                          color_table=tools.utils.parse_color_table(param_dict['color_txt']))
+                    yimage.io.write_image(
+                        os.path.join(param_dict['save_dir_model'], 'val_visual', str(epoch), 'slice', names[kk]),
+                        pred_sub + 1,
+                        color_table=tools.utils.parse_color_table(param_dict['color_txt']))
                     # cv2.imwrite(os.path.join(save_dir, 'val_visual', str(epoch), 'color', names[kk]), pred_vis)
         # import pudb;pu.db
-        val_miou, val_acc, val_f1 = evaluate(os.path.join(param_dict['root_data'], 'label_val'), os.path.join(param_dict['save_dir_model'], 'val_visual', str(epoch), 'slice'), param_dict['num_class'])
-        val_loss = val_loss/batch_num
+        val_miou, val_acc, val_f1 = evaluate(os.path.join(param_dict['root_data'], 'label_val'),
+                                             os.path.join(param_dict['save_dir_model'], 'val_visual', str(epoch),
+                                                          'slice'), param_dict['num_class'])
+        val_loss = val_loss / batch_num
     return val_miou, val_acc, val_f1, val_loss
 
 
 def image_infer(model, epoch):
     model.eval()
     imgs = os.listdir(param_dict['val_path'])
-    # if param_dict['val_visual']:
-    #     if os.path.exists(os.path.join(param_dict['save_dir_model'], 'val_visual', str(epoch))) is False:
-    #         os.mkdir(os.path.join(param_dict['save_dir_model'], 'val_visual'))
-    #     if os.path.exists(os.path.join(param_dict['save_dir_model'], 'val_visual', str(epoch))) is False:
-    #         os.mkdir(os.path.join(param_dict['save_dir_model'], 'val_visual', str(epoch)))
-    #         os.mkdir(os.path.join(param_dict['save_dir_model'], 'val_visual', str(epoch), 'big'))
     for img_path in tqdm.tqdm(imgs):
-        output = slide_pred(param_dict, model, os.path.join(param_dict['val_path'], img_path), param_dict['num_class'], param_dict['img_size'], param_dict['overlap'])
+        output = slide_pred(param_dict, model, os.path.join(param_dict['val_path'], img_path), param_dict['num_class'],
+                            param_dict['img_size'], param_dict['overlap'])
         pred_gray = torch.argmax(output, 1)
         pred_gray = pred_gray[0].cpu().data.numpy().astype(np.int32)
-        yimage.io.write_image(os.path.join(param_dict['save_dir_model'], 'val_visual', str(epoch), 'big', img_path), pred_gray + 1, color_table=tools.utils.parse_color_table(param_dict['color_txt']))
-    val_miou_true, val_acc_true, val_f1_true = evaluate(param_dict['val_gt'], os.path.join(param_dict['save_dir_model'], 'val_visual', str(epoch), 'big'), param_dict['num_class'])
+        yimage.io.write_image(os.path.join(param_dict['save_dir_model'], 'val_visual', str(epoch), 'big', img_path),
+                              pred_gray + 1, color_table=tools.utils.parse_color_table(param_dict['color_txt']))
+    val_miou_true, val_acc_true, val_f1_true = evaluate(param_dict['val_gt'],
+                                                        os.path.join(param_dict['save_dir_model'], 'val_visual',
+                                                                     str(epoch), 'big'), param_dict['num_class'])
     return val_miou_true, val_acc_true, val_f1_true
 
 
@@ -213,13 +221,19 @@ def adjust_learning_rate(base_lr, optimizer, epoch, model_id, power):
 
 
 if __name__ == '__main__':
-    yaml_file = 'config.yaml'
+    if len(sys.argv) == 1:
+        yaml_file = 'config.yaml'
+    else:
+        yaml_file = sys.argv[1]
     param_dict = parse_yaml(yaml_file)
+    print(param_dict)
     os.environ["CUDA_VISIBLE_DEVICES"] = param_dict['gpu_id']
     gpu_list = [i for i in range(len(param_dict['gpu_id'].split(',')))]
     gx = torch.cuda.device_count()
+    print('useful gpu count is {}'.format(gx))
 
-    frame_work = get_net(param_dict['model_name'], param_dict['input_bands'], param_dict['num_class'], param_dict['img_size'])
+    frame_work = get_net(param_dict['model_name'], param_dict['input_bands'], param_dict['num_class'],
+                         param_dict['img_size'])
     if os.path.exists(param_dict['model_dir']) is False:
         os.mkdir(param_dict['model_dir'])
     main()
