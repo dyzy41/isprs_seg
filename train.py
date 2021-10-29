@@ -4,6 +4,7 @@ import os
 import yimage
 import torch
 import re
+from timm.optim import create_optimizer_v2
 import torchvision.transforms as standard_transforms
 from torch.utils.data import DataLoader
 import tqdm
@@ -24,6 +25,7 @@ from tools.parse_config_yaml import parse_yaml
 def main():
     composed_transforms_train = standard_transforms.Compose([
         tr.RandomHorizontalFlip(),
+        tr.RandomVerticalFlip(),
         tr.ScaleNRotate(rots=(-15, 15), scales=(.75, 1.5)),
         # tr.RandomResizedCrop(img_size),
         tr.FixedResize(param_dict['img_size']),
@@ -67,16 +69,16 @@ def main():
             model_id = int(model_id[0])
 
     criterion = get_loss(param_dict['loss_type'])  # define loss
-    # optimizer = torch.optim.SGD(model.parameters(),lr=0.00001, momentum=momentum, weight_decay=weight_decay)
-    optimizer = torch.optim.Adam(model.parameters(), lr=param_dict['base_lr'])  # define optimizer
+    optimizer = create_optimizer_v2(model, 'adam', learning_rate=param_dict['base_lr'])
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
     writer = SummaryWriter(os.path.join(param_dict['save_dir_model'], 'runs'))
 
     with open(os.path.join(param_dict['save_dir_model'], 'log.txt'), 'w') as ff:
         for epoch in range(param_dict['epoches']):
             model.train()
             running_loss = 0.0
-            lr = adjust_learning_rate(param_dict['base_lr'], optimizer, epoch, model_id,
-                                      param_dict['power'])  # adjust learning rate
+            # lr = adjust_learning_rate(param_dict['base_lr'], optimizer, epoch, model_id,
+            #                           param_dict['power'])  # adjust learning rate
             batch_num = 0
             for i, data in tqdm.tqdm(enumerate(trainloader)):  # get data
                 images, labels = data['image'], data['gt']
@@ -111,9 +113,10 @@ def main():
                 batch_num += images.size()[0]
                 # break
             print('epoch is {}, train loss is {}'.format(epoch, running_loss.item() / batch_num))
-            writer.add_scalar('learning_rate', lr, epoch)
+            cur_lr = optimizer.param_groups[0]['lr']
+            writer.add_scalar('learning_rate', cur_lr, epoch)
             writer.add_scalar('train_loss', running_loss / batch_num, epoch)
-
+            scheduler.step()
             if epoch % param_dict['save_iter'] == 0:
                 torch.save(model.state_dict(), os.path.join(param_dict['model_dir'], '%d.pth' % (model_id + epoch)))
                 val_miou, val_acc, val_f1, val_loss = eval(valloader, model, criterion, epoch)
@@ -128,7 +131,7 @@ def main():
                 writer.add_scalar('val_loss', val_loss, epoch)
                 cur_log = 'epoch:{}, learning_rate:{}, train_loss:{}, val_loss:{}, val_f1:{}, val_acc:{}, val_miou:{}, \
                  val_f1_true:{}, val_acc_true:{}, val_miou_true:{}\n'.format(
-                    str(epoch), str(lr), str(running_loss.item() / batch_num), str(val_loss), str(val_f1), str(val_acc),
+                    str(epoch), str(cur_lr), str(running_loss.item() / batch_num), str(val_loss), str(val_f1), str(val_acc),
                     str(val_miou), str(val_f1_true), str(val_acc_true), str(val_miou_true)
                 )
                 print(cur_log)

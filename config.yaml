@@ -22,7 +22,7 @@ input_bands: 3
 root_data: '../vai_data/cut_data'
 dataset: 'massroad'
 exp_name: '1022'
-model_experision: '3'
+model_experision: '24'
 
 val_path: '../vai_data/train_img/val'
 val_gt: '../vai_data/val_gt'

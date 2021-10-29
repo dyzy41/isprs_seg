@@ -209,6 +209,23 @@ class RandomHorizontalFlip(object):
     def __str__(self):
         return 'RandomHorizontalFlip'
 
+
+class RandomVerticalFlip(object):
+    """Vertical flip the given image and ground truth randomly with a probability of 0.5."""
+
+    def __call__(self, sample):
+
+        if random.random() < 0.5:
+            for elem in sample.keys():
+                tmp = sample[elem]
+                tmp = cv2.flip(tmp, flipCode=0)
+                sample[elem] = tmp
+
+        return sample
+    def __str__(self):
+        return 'RandomVerticalFlip'
+
+
 class GaussianBlur(object):
     def __call__(self, sample):
         sample['image'] = cv2.GaussianBlur(sample['image'], (5, 5), 0)

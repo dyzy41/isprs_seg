@@ -3,7 +3,6 @@ import torch
 import torch.nn.functional as F
 import torch.nn as nn
 #from sklearn.utils import class_weight
-from config import *
 from tools.lovasz_losses import lovasz_softmax
 
 
