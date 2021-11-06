@@ -165,10 +165,10 @@ class UED50(nn.Module):
         layers = self.backbone(x)
         x1, x2, x3, x4, x5 = layers[0], layers[1], layers[2], layers[3], layers[4]   #64->2048
         x1 = self.ed1(x1)
-        x2 = self.ed1(x2)
-        x3 = self.ed1(x3)
-        x4 = self.ed1(x4)
-        x5 = self.ed1(x5)
+        x2 = self.ed2(x2)
+        x3 = self.ed3(x3)
+        x4 = self.ed4(x4)
+        x5 = self.ed5(x5)
 
         x = self.up1(x5, x4)
         x = self.up2(x, x3)

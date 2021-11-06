@@ -1,4 +1,4 @@
-batch_size: 2  # 设置批量大小
+batch_size: 16  # 设置批量大小
 use_gpu: True  # 是否使用use_gpu
 img_size: 512  # 输入图片大小
 overlap: 64
@@ -7,7 +7,7 @@ base_lr: 0.001  # 学习率
 weight_decay: 2e-5
 momentum: 0.9
 power: 0.99
-gpu_id: '0'
+gpu_id: '1'
 loss_type: 'ce'
 save_iter: 10
 num_workers: 1
@@ -21,8 +21,8 @@ input_bands: 3
 #data path
 root_data: '../vai_data/cut_data'
 dataset: 'massroad'
-exp_name: '1022'
-model_experision: '32'
+exp_name: '1106'
+model_experision: '_v0'
 
 val_path: '../vai_data/train_img/val'
 val_gt: '../vai_data/val_gt'
