@@ -1,13 +1,16 @@
 # isprs_seg
 ISPRS Vaihingen and Potsdam Datasets Segmentation
 
-datasets web: 
+datasets web:  
+https://www2.isprs.org/commissions/comm2/wg4/benchmark/2d-sem-label-vaihingen/  
+https://www2.isprs.org/commissions/comm2/wg4/benchmark/2d-sem-label-potsdam/  
 
-https://www2.isprs.org/commissions/comm2/wg4/benchmark/2d-sem-label-vaihingen/
+Existing functions:  
+data generate  
+pred slide window  
+train and test  
 
-https://www2.isprs.org/commissions/comm2/wg4/benchmark/2d-sem-label-potsdam/
-
-future works:
+future works:  
 albumentations data augumentation for 3 band iamges and multi band images
 
 
