@@ -167,8 +167,8 @@ class UED50(nn.Module):
         x1 = self.ed1(x1)
         x2 = self.ed2(x2)
         x3 = self.ed3(x3)
-        x4 = self.ed4(x4)
-        x5 = self.ed5(x5)
+        # x4 = self.ed4(x4)
+        # x5 = self.ed5(x5)
 
         x = self.up1(x5, x4)
         x = self.up2(x, x3)

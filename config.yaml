@@ -1,9 +1,9 @@
-batch_size: 16  # 设置批量大小
+batch_size: 12  # 设置批量大小
 use_gpu: True  # 是否使用use_gpu
 img_size: 512  # 输入图片大小
 overlap: 64
-epoches: 800
-base_lr: 0.001  # 学习率
+epoches: 300
+base_lr: 0.01  # 学习率
 weight_decay: 2e-5
 momentum: 0.9
 power: 0.99
@@ -22,7 +22,7 @@ input_bands: 3
 root_data: '../vai_data/cut_data'
 dataset: 'massroad'
 exp_name: '1106'
-model_experision: '_v0'
+model_experision: 'v2'
 
 val_path: '../vai_data/train_img/val'
 val_gt: '../vai_data/val_gt'
