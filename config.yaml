@@ -17,6 +17,7 @@ color_txt: '../vai_data/color_table_isprs.txt'
 num_class: 6  # some parameters
 model_name: 'UED50'  # ' unet, res_unet_psp, res_unet'
 input_bands: 3
+vis_graph: True
 
 #data path
 root_data: '../vai_data/cut_data'
