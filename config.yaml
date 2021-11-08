@@ -1,4 +1,4 @@
-batch_size: 12  # 设置批量大小
+batch_size: 2  # 设置批量大小
 use_gpu: True  # 是否使用use_gpu
 img_size: 512  # 输入图片大小
 overlap: 64
@@ -15,7 +15,7 @@ val_visual: True
 image_driver: 'gdal'   #pillow, gdal
 color_txt: '../vai_data/color_table_isprs.txt'
 num_class: 6  # some parameters
-model_name: 'UED50'  # ' unet, res_unet_psp, res_unet'
+model_name: 'FANet'  # ' unet, res_unet_psp, res_unet'
 input_bands: 3
 vis_graph: True
 

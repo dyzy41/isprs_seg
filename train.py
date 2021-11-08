@@ -243,7 +243,7 @@ if __name__ == '__main__':
     if param_dict['vis_graph']:
         sampledata = torch.rand((1, param_dict['input_bands'], param_dict['img_size'], param_dict['img_size']))
         o = frame_work(sampledata)
-        onnx_path = os.path.join(param_dict['model_dir'], "model_vis.onnx")
+        onnx_path = os.path.join(param_dict['save_dir_model'], "model_vis.onnx")
         torch.onnx.export(frame_work, sampledata, onnx_path, opset_version=11)
         netron.start(onnx_path)
 
