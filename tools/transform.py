@@ -7,17 +7,18 @@ import math
 from torchvision import transforms
 import torchvision.transforms.functional as tf
 
+
 class FixedResize(object):
     """Resize the image and the ground truth to specified resolution.
     Args:
         size: expected output size of each image
     """
+
     def __init__(self, size, flagvals=None):
         self.size = (size, size)
         self.flagvals = flagvals
 
     def __call__(self, sample):
-
 
         elems = list(sample.keys())
 
@@ -31,7 +32,7 @@ class FixedResize(object):
         return sample
 
     def __str__(self):
-        return 'FixedResize: '+str(self.size)
+        return 'FixedResize: ' + str(self.size)
 
 
 class Normalize(object):
@@ -40,6 +41,7 @@ class Normalize(object):
         mean (tuple): means for each channel.
         std (tuple): standard deviations for each channel.
     """
+
     def __init__(self, mean=(0., 0., 0.), std=(1., 1., 1.)):
         self.mean = mean
         self.std = std
@@ -51,12 +53,14 @@ class Normalize(object):
 
         return sample
 
+
 class Normalize_pretrained(object):
     """Normalize a tensor image with mean and standard deviation.
     Args:
         mean (tuple): means for each channel.
         std (tuple): standard deviations for each channel.
     """
+
     def __init__(self, mean=(0., 0., 0.), std=(1., 1., 1.)):
         self.mean = mean
         self.std = std
@@ -71,6 +75,7 @@ class Normalize_pretrained(object):
         sample['gt'] /= self.std
 
         return sample
+
 
 class RandomResizedCrop(object):
     """Crop the given Image to random size and aspect ratio.
@@ -146,7 +151,7 @@ class RandomResizedCrop(object):
 
     def __str__(self):
         return 'RandomResizedCrop: (size={}, scale={}, ratio={}.'.format(str(self.size),
-                                                        str(self.scale), str(self.ratio))
+                                                                         str(self.scale), str(self.ratio))
 
 
 class ScaleNRotate(object):
@@ -155,6 +160,7 @@ class ScaleNRotate(object):
         rots (tuple): (minimum, maximum) rotation angle
         scales (tuple): (minimum, maximum) scale
     """
+
     def __init__(self, rots=(-30, 30), scales=(.75, 1.25)):
         assert (isinstance(rots, type(scales)))
         self.rots = rots
@@ -163,11 +169,10 @@ class ScaleNRotate(object):
     def __call__(self, sample):
 
         rot = (self.rots[1] - self.rots[0]) * random.random() - \
-              (self.rots[1] - self.rots[0])/2
+              (self.rots[1] - self.rots[0]) / 2
 
         sc = (self.scales[1] - self.scales[0]) * random.random() - \
-                 (self.scales[1] - self.scales[0]) / 2 + 1
-
+             (self.scales[1] - self.scales[0]) / 2 + 1
 
         for elem in sample.keys():
 
@@ -175,7 +180,7 @@ class ScaleNRotate(object):
 
             h, w = tmp.shape[:2]
             center = (w / 2, h / 2)
-            assert(center != 0)  # Strange behaviour warpAffine
+            assert (center != 0)  # Strange behaviour warpAffine
 
             M = cv2.getRotationMatrix2D(center, rot, sc)
 
@@ -191,7 +196,7 @@ class ScaleNRotate(object):
         return sample
 
     def __str__(self):
-        return 'ScaleNRotate:(rot='+str(self.rots)+',scale='+str(self.scales)+')'
+        return 'ScaleNRotate:(rot=' + str(self.rots) + ',scale=' + str(self.scales) + ')'
 
 
 class RandomHorizontalFlip(object):
@@ -206,6 +211,7 @@ class RandomHorizontalFlip(object):
                 sample[elem] = tmp
 
         return sample
+
     def __str__(self):
         return 'RandomHorizontalFlip'
 
@@ -222,6 +228,7 @@ class RandomVerticalFlip(object):
                 sample[elem] = tmp
 
         return sample
+
     def __str__(self):
         return 'RandomVerticalFlip'
 
@@ -230,8 +237,10 @@ class GaussianBlur(object):
     def __call__(self, sample):
         sample['image'] = cv2.GaussianBlur(sample['image'], (5, 5), 0)
         return sample
+
     def __str__(self):
         return 'GaussianBlur'
+
 
 class morphologyEx(object):
     def __call__(self, sample):
@@ -241,8 +250,10 @@ class morphologyEx(object):
         blackhat = cv2.morphologyEx(img, cv2.MORPH_BLACKHAT, kernel)
         sample['image'] = blackhat
         return sample
+
     def __str__(self):
         return 'morphologyEx'
+
 
 class CLAHE(object):
     def __call__(self, sample):
@@ -253,8 +264,10 @@ class CLAHE(object):
 
         sample['image'] = image
         return sample
+
     def __str__(self):
         return 'CLAHE'
+
 
 class homomorphic_filter(object):
     def __call__(self, sample):
@@ -286,6 +299,7 @@ class homomorphic_filter(object):
 
         sample['image'] = dst
         return sample
+
     def __str__(self):
         return 'homomorphic_filter'
 
@@ -297,6 +311,7 @@ class adjustBrightness(object):
         image = tf.adjust_brightness(image, factor)
         sample['image'] = np.asarray(image)
         return sample
+
 
 class adjustSaturation(object):
     def __call__(self, sample):
