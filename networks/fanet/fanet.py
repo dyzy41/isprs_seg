@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from networks.common_func.get_backbone import get_model
+from math import log
 
 
 class EDBlock(nn.Module):
@@ -144,6 +145,79 @@ class FusionBlock(nn.Module):
         size = lx.size()
         hx2l = F.interpolate(hx, size=(size[2], size[3]), mode='bilinear')
         out = hx2l+lx
+        return out
+
+
+class NonLocalBlock(nn.Module):
+    def __init__(self, channel):
+        super(NonLocalBlock, self).__init__()
+        self.inter_channel = channel // 2
+        self.conv_phi = nn.Conv2d(in_channels=channel, out_channels=self.inter_channel, kernel_size=1, stride=1,
+                                  padding=0, bias=False)
+        self.conv_theta = nn.Conv2d(in_channels=channel, out_channels=self.inter_channel, kernel_size=1, stride=1,
+                                    padding=0, bias=False)
+        self.conv_g = nn.Conv2d(in_channels=channel, out_channels=self.inter_channel, kernel_size=1, stride=1,
+                                padding=0, bias=False)
+        self.softmax = nn.Softmax(dim=1)
+        self.conv_mask = nn.Conv2d(in_channels=self.inter_channel, out_channels=channel, kernel_size=1, stride=1,
+                                   padding=0, bias=False)
+
+    def forward(self, x):
+        # [N, C, H , W]
+        b, c, h, w = x.size()
+        # [N, C/2, H * W]
+        x_phi = self.conv_phi(x).view(b, c, -1)
+        # [N, H * W, C/2]
+        x_theta = self.conv_theta(x).view(b, c, -1).permute(0, 2, 1).contiguous()
+        x_g = self.conv_g(x).view(b, c, -1).permute(0, 2, 1).contiguous()
+        # [N, H * W, H * W]
+        mul_theta_phi = torch.matmul(x_theta, x_phi)
+        mul_theta_phi = self.softmax(mul_theta_phi)
+        # [N, H * W, C/2]
+        mul_theta_phi_g = torch.matmul(mul_theta_phi, x_g)
+        # [N, C/2, H, W]
+        mul_theta_phi_g = mul_theta_phi_g.permute(0, 2, 1).contiguous().view(b, self.inter_channel, h, w)
+        # [N, C, H , W]
+        att_map = self.conv_mask(mul_theta_phi_g)
+        out = att_map + x
+        return att_map
+
+
+class ChannelAttentionModule(nn.Module):
+    def __init__(self, channel, ratio=16):
+        super(ChannelAttentionModule, self).__init__()
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        self.max_pool = nn.AdaptiveMaxPool2d(1)
+
+        self.shared_MLP = nn.Sequential(
+            nn.Conv2d(channel, channel // ratio, 1, bias=False),
+            nn.ReLU(),
+            nn.Conv2d(channel // ratio, channel, 1, bias=False)
+        )
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        avgout = self.shared_MLP(self.avg_pool(x))
+        maxout = self.shared_MLP(self.max_pool(x))
+        return self.sigmoid(avgout + maxout)
+
+
+class AttentionFusionBlock(nn.Module):
+    def __init__(self):
+        super(AttentionFusionBlock, self).__init__()
+        self.conv_block = DoubleConv(256, 256)
+        self.sa = NonLocalBlock(256)
+        self.ca = ChannelAttentionModule(256)
+
+    def forward(self, hx, lx):
+        size = lx.size()
+        hx2l = F.interpolate(hx, size=(size[2], size[3]), mode='bilinear')
+        out = hx2l+lx
+
+        sa_map = self.sa(lx)
+        ca_weight = self.ca(hx)
+        out = ca_weight*out
+        out = out + sa_map
         return out
 
 
