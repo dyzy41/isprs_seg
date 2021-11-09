@@ -73,7 +73,7 @@ def main():
 
     criterion = get_loss(param_dict['loss_type'])  # define loss
     optimizer = create_optimizer_v2(model, 'adam', learning_rate=param_dict['base_lr'])
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.3)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=80, gamma=0.3)
     writer = SummaryWriter(os.path.join(param_dict['save_dir_model'], 'runs'))
 
     with open(os.path.join(param_dict['save_dir_model'], 'log.txt'), 'w') as ff:

@@ -190,7 +190,7 @@ if __name__ == '__main__':
     param_dict = parse_yaml('config.yaml')
 
     test_path = '../vai_data/train_img/test'
-    model_path = '../1022_files/Res_UNet_50_3/pth_Res_UNet_50/270.pth'
+    model_path = r'D:\Yubo\torch_learn\vai_seg\1108_files\FANet_v3\pth_FANet/380.pth'
 
     if os.path.exists(param_dict['save_path']) is True:
         shutil.rmtree(param_dict['save_path'])

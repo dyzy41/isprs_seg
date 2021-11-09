@@ -22,7 +22,7 @@ class IsprsSegmentation(Dataset):
         # self.images = [os.path.join(self._base_dir, 'image_train', i) for i in self.images]
         # self.categories = [i.replace('image_train', 'label_train') for i in self.images]
 
-        self.images = os.listdir(os.path.join(self._base_dir, 'image_{}'.format(self.split)))[:16]
+        self.images = os.listdir(os.path.join(self._base_dir, 'image_{}'.format(self.split)))
         self.images = [os.path.join(self._base_dir, 'image_{}'.format(self.split), i) for i in self.images]
         self.images = [i for i in self.images if i.endswith('.tif')]
         self.categories = [i.replace('image_{}'.format(self.split), 'label_{}'.format(self.split)) for i in self.images]

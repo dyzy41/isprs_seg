@@ -1,1 +1,1 @@
-from networks.fanet.fanet import FANet
+from networks.fanet.fanet import FANet50, FANet101

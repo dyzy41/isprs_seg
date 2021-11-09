@@ -147,9 +147,9 @@ class FusionBlock(nn.Module):
         return out
 
 
-class FANet(nn.Module):
+class FANet50(nn.Module):
     def __init__(self, in_c, num_class, bilinear=True):
-        super(FANet, self).__init__()
+        super(FANet50, self).__init__()
         self.in_c = 3
         self.num_class = num_class
         self.bilinear = bilinear
@@ -203,6 +203,65 @@ class FANet(nn.Module):
         out = F.interpolate(m2, size=(size[2], size[3]), mode='bilinear')
         out = self.outc(out)
         return out
+
+
+class FANet101(nn.Module):
+    def __init__(self, in_c, num_class, bilinear=True):
+        super(FANet101, self).__init__()
+        self.in_c = 3
+        self.num_class = num_class
+        self.bilinear = bilinear
+        self.backbone = get_model('resnet101')
+        self.inc = DoubleConv(in_c, 64)
+
+        self.conv_block2 = DoubleConv(256, 256)
+        self.conv_block3 = DoubleConv(512, 256)
+        self.conv_block4 = DoubleConv(1024, 256)
+        self.conv_block5 = DoubleConv(2048, 256)
+
+        self.fb = FusionBlock()
+
+        self.down1 = Down(64, 128)
+        self.down2 = Down(128, 256)
+        self.down3 = Down(256, 512)
+        self.down4 = Down(512, 512)
+        self.up1 = Up(2048+1024, 256, bilinear)
+        self.up2 = Up(512+256, 128, bilinear)
+        self.up3 = Up(256+128, 64, bilinear)
+        self.up4 = Up(64+64, 64, bilinear)
+
+        self.ed1 = EDBlock(64, 64)
+        self.ed2 = EDBlock(256, 256)
+        self.ed3 = EDBlock(512, 512)
+        self.ed4 = EDBlock(1024, 1024)
+        self.ed5 = EDBlock(2048, 2048)
+
+        self.outc = OutConv(256, num_class)
+
+
+    def forward(self, x):
+        size = x.size()
+        layers = self.backbone(x)
+        x1, x2, x3, x4, x5 = layers[0], layers[1], layers[2], layers[3], layers[4]   #64->2048
+
+        x2 = self.conv_block2(x2)
+        x3 = self.conv_block3(x3)
+        x4 = self.conv_block4(x4)
+        x5 = self.conv_block5(x5)
+
+        f4 = self.fb(x5, x4)
+        f3 = self.fb(x4, x3)
+        f2 = self.fb(x3, x2)
+
+        p3 = self.fb(f4, f3)
+        p2 = self.fb(f3, f2)
+
+        m2 = self.fb(p3, p2)
+
+        out = F.interpolate(m2, size=(size[2], size[3]), mode='bilinear')
+        out = self.outc(out)
+        return out
+
 
 class Res_UNet_34(nn.Module):
     def __init__(self, in_c, num_class, bilinear=True):

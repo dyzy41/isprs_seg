@@ -9,4 +9,4 @@ from networks.dunet import DUNet
 from networks.encnet import EncNet
 from networks.exnet import EXNet
 from networks.uednet import UED50
-from networks.fanet import FANet
+from networks.fanet import FANet50, FANet101
