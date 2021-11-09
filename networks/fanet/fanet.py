@@ -235,7 +235,7 @@ class FANet50(nn.Module):
         self.conv_block4 = DoubleConv(1024, 256)
         self.conv_block5 = DoubleConv(2048, 256)
 
-        self.fb = FusionBlock()
+        self.fb = AttentionFusionBlock()
 
         self.down1 = Down(64, 128)
         self.down2 = Down(128, 256)
