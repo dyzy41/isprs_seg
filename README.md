@@ -5,7 +5,7 @@ ISPRS Vaihingen and Potsdam Datasets Segmentation
 https://www2.isprs.org/commissions/comm2/wg4/benchmark/2d-sem-label-vaihingen/  
 https://www2.isprs.org/commissions/comm2/wg4/benchmark/2d-sem-label-potsdam/  
 
-现存功能： 
+现存功能:  
 大尺寸遥感图像数据切片生成，滑窗切片  
 大尺寸遥感图像滑窗预测，生成大尺寸预测结果  
 完整的科研训练流程，支持生成各种tensorboard曲线图。包括learning_rate, train_loss, val_loss, val_acc(切片), val_acc(大图), f1  
