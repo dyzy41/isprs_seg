@@ -206,7 +206,7 @@ class AttentionFusionBlock(nn.Module):
     def __init__(self):
         super(AttentionFusionBlock, self).__init__()
         self.conv_block = DoubleConv(256, 256)
-        self.sa = NonLocalBlock(256)
+        # self.sa = NonLocalBlock(256)
         self.ca = ChannelAttentionModule(256)
 
     def forward(self, hx, lx):
@@ -214,10 +214,11 @@ class AttentionFusionBlock(nn.Module):
         hx2l = F.interpolate(hx, size=(size[2], size[3]), mode='bilinear')
         out = hx2l+lx
 
-        sa_map = self.sa(lx)
+        # sa_map = self.sa(lx)
         ca_weight = self.ca(hx)
         out = ca_weight*out
-        out = out + sa_map
+        # out = out + sa_map
+        self.conv_block(out)
         return out
 
 
@@ -235,7 +236,7 @@ class FANet50(nn.Module):
         self.conv_block4 = DoubleConv(1024, 256)
         self.conv_block5 = DoubleConv(2048, 256)
 
-        self.fb = FusionBlock()
+        self.fb = AttentionFusionBlock()
 
         self.down1 = Down(64, 128)
         self.down2 = Down(128, 256)
