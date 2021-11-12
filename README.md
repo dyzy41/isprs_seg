@@ -15,6 +15,7 @@ https://www2.isprs.org/commissions/comm2/wg4/benchmark/2d-sem-label-potsdam/
 支持timm调用backbone模型，自由组合分割算法模块和骨架网络模块。  
 支持timm离线调用预训练模型。  
 支持timm调用进行多波段数据训练。  
+支持调用参数yaml文件训练。
 
 
 未来工作:  
