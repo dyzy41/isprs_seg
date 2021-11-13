@@ -29,7 +29,7 @@ def main():
     composed_transforms_train = standard_transforms.Compose([
         tr.RandomHorizontalFlip(),
         tr.RandomVerticalFlip(),
-        tr.ScaleNRotate(rots=(-30, 30), scales=(0.9, 1.1)),
+        tr.ScaleNRotate(rots=(-15, 15), scales=(0.9, 1.1)),
         # tr.RandomResizedCrop(img_size),
         tr.FixedResize(param_dict['img_size']),
         tr.Normalize(mean=param_dict['mean'], std=param_dict['std']),
@@ -73,9 +73,9 @@ def main():
 
     criterion = get_loss(param_dict['loss_type'])  # define loss
     optimizer = create_optimizer_v2(model, 'adam', learning_rate=param_dict['base_lr'])
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=80, gamma=0.3)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.8)
     writer = SummaryWriter(os.path.join(param_dict['save_dir_model'], 'runs'))
-
+    best_val_acc = 0.0
     with open(os.path.join(param_dict['save_dir_model'], 'log.txt'), 'w') as ff:
         for epoch in range(param_dict['epoches']):
             model.train()
@@ -121,7 +121,7 @@ def main():
             writer.add_scalar('train_loss', running_loss / batch_num, epoch)
             scheduler.step()
             if epoch % param_dict['save_iter'] == 0:
-                torch.save(model.state_dict(), os.path.join(param_dict['model_dir'], '%d.pth' % (model_id + epoch)))
+
                 val_miou, val_acc, val_f1, val_loss = eval(valloader, model, criterion, epoch)
                 val_miou_true, val_acc_true, val_f1_true = image_infer(model, epoch)
                 # val_miou_true, val_acc_true, val_f1_true = 0.0, 0.0, 0.0
@@ -134,11 +134,15 @@ def main():
                 writer.add_scalar('val_loss', val_loss, epoch)
                 cur_log = 'epoch:{}, learning_rate:{}, train_loss:{}, val_loss:{}, val_f1:{}, val_acc:{}, val_miou:{}, \
                  val_f1_true:{}, val_acc_true:{}, val_miou_true:{}\n'.format(
-                    str(epoch), str(cur_lr), str(running_loss.item() / batch_num), str(val_loss), str(val_f1), str(val_acc),
+                    str(epoch), str(cur_lr), str(running_loss.item() / batch_num), str(val_loss), str(val_f1),
+                    str(val_acc),
                     str(val_miou), str(val_f1_true), str(val_acc_true), str(val_miou_true)
                 )
                 print(cur_log)
                 ff.writelines(str(cur_log))
+                if val_acc_true > best_val_acc:
+                    torch.save(model.state_dict(), os.path.join(param_dict['model_dir'], 'valacc_best.pth'))
+                    best_val_acc = val_acc_true
 
 
 def eval(valloader, model, criterion, epoch):
