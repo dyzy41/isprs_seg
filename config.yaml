@@ -1,4 +1,4 @@
-batch_size: 2  # 设置批量大小
+batch_size: 14  # 设置批量大小
 use_gpu: True  # 是否使用use_gpu
 img_size: 512  # 输入图片大小
 overlap: 64
@@ -7,7 +7,7 @@ base_lr: 0.01  # 学习率
 weight_decay: 2e-5
 momentum: 0.9
 power: 0.99
-gpu_id: '1'
+gpu_id: '0'
 loss_type: 'ce'
 save_iter: 10
 num_workers: 1

@@ -29,7 +29,7 @@ def main():
     composed_transforms_train = standard_transforms.Compose([
         tr.RandomHorizontalFlip(),
         tr.RandomVerticalFlip(),
-        tr.ScaleNRotate(rots=(-30, 30), scales=(0.9, 1.1)),
+        tr.ScaleNRotate(rots=(-15, 15), scales=(0.9, 1.1)),
         # tr.RandomResizedCrop(img_size),
         tr.FixedResize(param_dict['img_size']),
         tr.Normalize(mean=param_dict['mean'], std=param_dict['std']),

@@ -47,6 +47,7 @@ class EDBlock(nn.Module):
         self.relu = nn.ReLU()
         self.conv = nn.Conv2d(in_c, out_c, 1, 1, 0)
         self.bn = nn.BatchNorm2d(out_c)
+        self.conv_last = DoubleConv(in_c*4, out_c)
 
     def forward(self, x):
         x2 = self.down2(x)
@@ -62,8 +63,9 @@ class EDBlock(nn.Module):
         x8 = self.transC8(x8)
 
         x_conv = self.relu(self.bn(self.conv(x)))
-        x_out = x2+x4+x8+x_conv
-
+        # x_out = x+x2+x4+x8+x_conv
+        x_out = torch.cat([x2, x4, x8, x_conv], 1)
+        x_out = self.conv_last(x_out)
         return x_out
 
 class DoubleConv(nn.Module):
@@ -275,8 +277,9 @@ class FANet50(nn.Module):
 
         m2 = self.fb(p3, p2)
 
-        out = F.interpolate(m2, size=(size[2], size[3]), mode='bilinear')
-        out = self.outc(out)
+        m2 = self.ed2(m2)
+        out = self.outc(m2)
+        out = F.interpolate(out, size=(size[2], size[3]), mode='bilinear')
         return out
 
 
