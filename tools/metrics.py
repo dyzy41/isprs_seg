@@ -105,7 +105,8 @@ def metrics(confu_mat_total, save_path='./'):
 if __name__ == '__main__':
     boundary_id = 0
     p_gt = '../../vai_data/gt_nobd_2'
-    p_pred = '../../result/big'
+    # p_pred = '../../result/big'
+    p_pred = r'F:\0github\github_master\dl_tools\files\yuyu_data2'
 
     gts = sorted(os.listdir(p_gt))
     preds = sorted(os.listdir(p_pred))
