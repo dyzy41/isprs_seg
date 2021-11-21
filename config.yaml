@@ -7,7 +7,7 @@ base_lr: 0.01  # 学习率
 weight_decay: 2e-5
 momentum: 0.9
 power: 0.99
-gpu_id: '1'
+gpu_id: '0'
 loss_type: 'ce'
 save_iter: 10
 num_workers: 1
@@ -15,7 +15,7 @@ val_visual: True
 image_driver: 'gdal'   #pillow, gdal
 color_txt: '../vai_data/color_table_isprs.txt'
 num_class: 6  # some parameters
-model_name: 'FANet50'  # ' unet, res_unet_psp, res_unet'
+model_name: 'MANet'  # ' unet, res_unet_psp, res_unet'
 pretrained_model: 'F:\0github\github_master\checkpoints\resnet50_ram-a26f946b.pth'
 input_bands: 3
 vis_graph: True
